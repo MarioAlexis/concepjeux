@@ -10,8 +10,9 @@ public class PlatformerCharacter2D : MonoBehaviour
 	[Range(0, 1)]
 	[SerializeField] float crouchSpeed = .36f;			// Amount of maxSpeed applied to crouching movement. 1 = 100%
 	
-	[SerializeField] bool airControl = false;			// Whether or not a player can steer while jumping;
-	[SerializeField] LayerMask whatIsGround;			// A mask determining what is ground to the character
+	[SerializeField] float airControl = 0;			    // Whether or not a player can steer while jumping;
+    [SerializeField] float numberMaxOfConsecutivesJumps = 1;// Max Number Of Jump;
+    [SerializeField] LayerMask whatIsGround;			// A mask determining what is ground to the character
 	
 	Transform groundCheck;								// A position marking where to check if the player is grounded.
 	float groundedRadius = .2f;							// Radius of the overlap circle to determine if grounded
@@ -19,6 +20,7 @@ public class PlatformerCharacter2D : MonoBehaviour
 	Transform ceilingCheck;								// A position marking where to check for ceilings
 	float ceilingRadius = .01f;							// Radius of the overlap circle to determine if the player can stand up
 	Animator anim;										// Reference to the player's animator component.
+    float currentNumberOfJump = 0;
 
 
     void Awake()
@@ -56,14 +58,16 @@ public class PlatformerCharacter2D : MonoBehaviour
 		// Set whether or not the character is crouching in the animator
 		anim.SetBool("Crouch", crouch);
 
-		//only control the player if grounded or airControl is turned on
-		if(grounded || airControl)
+		//only control the player if grounded
+		if(grounded)
 		{
-			// Reduce the speed if crouching by the crouchSpeed multiplier
-			move = (crouch ? move * crouchSpeed : move);
+            currentNumberOfJump = 0;
 
-			// The Speed animator parameter is set to the absolute value of the horizontal input.
-			anim.SetFloat("Speed", Mathf.Abs(move));
+            // Reduce the speed if crouching by the crouchSpeed multiplier
+            move = (crouch ? move * crouchSpeed : move);
+
+            // The Speed animator parameter is set to the absolute value of the horizontal input.
+            anim.SetFloat("Speed", Mathf.Abs(move));
 
 			// Move the character
 			GetComponent<Rigidbody2D>().velocity = new Vector2(move * maxSpeed, GetComponent<Rigidbody2D>().velocity.y);
@@ -78,13 +82,42 @@ public class PlatformerCharacter2D : MonoBehaviour
 				Flip();
 		}
 
+        //only control the player if airControl is turned on
+        else if (airControl>0)
+        {
+
+            // The Speed animator parameter is set to the absolute value of the horizontal input.
+            anim.SetFloat("Speed", Mathf.Abs(move));
+
+            // Move the character
+            GetComponent<Rigidbody2D>().velocity = new Vector2(move * maxSpeed, GetComponent<Rigidbody2D>().velocity.y);
+
+            // If the input is moving the player right and the player is facing left...
+            if (move > 0 && !facingRight)
+                // ... flip the player.
+                Flip();
+            // Otherwise if the input is moving the player left and the player is facing right...
+            else if (move < 0 && facingRight)
+                // ... flip the player.
+                Flip();
+        }
+
         // If the player should jump...
-        if (grounded && jump) {
+       /* if (grounded && jump) {
             // Add a vertical force to the player.
             anim.SetBool("Ground", false);
             GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, jumpForce));
+        }*/
+
+        // If the player should jump...
+        if (jump && currentNumberOfJump<numberMaxOfConsecutivesJumps)
+        {
+            // Add a vertical force to the player.
+            currentNumberOfJump++;
+            anim.SetBool("Ground", false);
+            GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, jumpForce));
         }
-	}
+    }
 
 	
 	void Flip ()
