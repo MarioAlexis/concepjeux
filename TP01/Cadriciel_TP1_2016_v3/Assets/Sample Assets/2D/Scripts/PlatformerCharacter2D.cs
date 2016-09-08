@@ -31,6 +31,11 @@ public class PlatformerCharacter2D : MonoBehaviour
 		anim = GetComponent<Animator>();
 	}
 
+    bool inAir()
+    {
+        return !Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsGround);
+    }
+
 
 	void FixedUpdate()
 	{
@@ -40,6 +45,9 @@ public class PlatformerCharacter2D : MonoBehaviour
 
 		// Set the vertical animation
 		anim.SetFloat("vSpeed", GetComponent<Rigidbody2D>().velocity.y);
+
+        if (inAir() && currentNumberOfJump == 0)
+            currentNumberOfJump = 1;
 	}
 
 
@@ -103,7 +111,7 @@ public class PlatformerCharacter2D : MonoBehaviour
         }
 
         // If the player should jump...
-       /* if (grounded && jump) {
+        /*if (grounded && jump) {
             // Add a vertical force to the player.
             anim.SetBool("Ground", false);
             GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, jumpForce));
