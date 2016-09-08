@@ -5,9 +5,10 @@ public class PlatformerCharacter2D : MonoBehaviour
 	bool facingRight = true;							// For determining which way the player is currently facing.
 
 	[SerializeField] float maxSpeed = 10f;				// The fastest the player can travel in the x axis.
-	[SerializeField] float jumpForce = 400f;			// Amount of force added when the player jumps.	
+	[SerializeField] float jumpForce = 400f;			// Amount of force added when the player jumps.
+    [SerializeField] float jumpTime = 1f;
 
-	[Range(0, 1)]
+    [Range(0, 1)]
 	[SerializeField] float crouchSpeed = .36f;			// Amount of maxSpeed applied to crouching movement. 1 = 100%
 	
 	[SerializeField] float airControl = 0;			    // Whether or not a player can steer while jumping;
@@ -21,6 +22,7 @@ public class PlatformerCharacter2D : MonoBehaviour
 	float ceilingRadius = .01f;							// Radius of the overlap circle to determine if the player can stand up
 	Animator anim;										// Reference to the player's animator component.
     float currentNumberOfJump = 0;
+    float timer = 0;                                    // timer in jump
 
 
     void Awake()
@@ -34,6 +36,11 @@ public class PlatformerCharacter2D : MonoBehaviour
     bool inAir()
     {
         return !Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsGround);
+    }
+
+    bool canJump()
+    {
+        return currentNumberOfJump <= numberMaxOfConsecutivesJumps;
     }
 
 
@@ -51,7 +58,7 @@ public class PlatformerCharacter2D : MonoBehaviour
 	}
 
 
-	public void Move(float move, bool crouch, bool jump)
+	public void Move(float move, bool crouch, bool jump, bool jumpButtonPressed)
 	{
 
 
@@ -70,6 +77,7 @@ public class PlatformerCharacter2D : MonoBehaviour
 		if(grounded)
 		{
             currentNumberOfJump = 0;
+            timer = 0;
 
             // Reduce the speed if crouching by the crouchSpeed multiplier
             move = (crouch ? move * crouchSpeed : move);
@@ -91,8 +99,10 @@ public class PlatformerCharacter2D : MonoBehaviour
 		}
 
         //only control the player if airControl is turned on
-        else if (airControl>0)
+        else if (airControl>0 && inAir())
         {
+
+            float move2 = move * airControl / 100;
 
             // The Speed animator parameter is set to the absolute value of the horizontal input.
             anim.SetFloat("Speed", Mathf.Abs(move));
@@ -118,13 +128,37 @@ public class PlatformerCharacter2D : MonoBehaviour
         }*/
 
         // If the player should jump...
-        if (jump && currentNumberOfJump<numberMaxOfConsecutivesJumps)
+        /*if (jump && currentNumberOfJump<numberMaxOfConsecutivesJumps)
         {
             // Add a vertical force to the player.
-            currentNumberOfJump++;
             anim.SetBool("Ground", false);
             GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, jumpForce));
+            currentNumberOfJump++;
+        }*/
+
+        if (jump)
+        {
+            currentNumberOfJump++;
         }
+
+        
+
+        if (canJump() && jumpButtonPressed && timer < jumpTime)
+        {
+            //Calculate how far through the jump we are as a percentage
+            //apply the full jump force on the first frame, then apply less force
+            //each consecutive frame
+
+            float proportionCompleted = (1 - (timer / jumpTime))*0.1f;
+            GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, proportionCompleted*jumpForce));
+            timer += Time.deltaTime;
+        }
+
+        Debug.Log("jump button pressed : " + jumpButtonPressed);
+        Debug.Log("jump timer : " + timer);
+
+        if (!jumpButtonPressed)
+            timer = 0;
     }
 
 	
