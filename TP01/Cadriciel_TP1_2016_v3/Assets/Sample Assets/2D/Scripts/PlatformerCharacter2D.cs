@@ -11,6 +11,7 @@ public class PlatformerCharacter2D : MonoBehaviour
     [Range(0, 1)]
 	[SerializeField] float crouchSpeed = .36f;			// Amount of maxSpeed applied to crouching movement. 1 = 100%
 	
+    [Range(0, 1)]
 	[SerializeField] float airControl = 0;			    // Whether or not a player can steer while jumping;
     [SerializeField] float numberMaxOfConsecutivesJumps = 1;// Max Number Of Jump;
     [SerializeField] LayerMask whatIsGround;			// A mask determining what is ground to the character
@@ -21,8 +22,14 @@ public class PlatformerCharacter2D : MonoBehaviour
 	Transform ceilingCheck;								// A position marking where to check for ceilings
 	float ceilingRadius = .01f;							// Radius of the overlap circle to determine if the player can stand up
 	Animator anim;										// Reference to the player's animator component.
+
+    // OUR GLOBAL VARIABLE
     float currentNumberOfJump = 0;
     float timer = 0;                                    // timer in jump
+    float initJumpDirection = 0;                        // 1 mean jumping to the right | -1 mean jumping to the left
+    float airControlSpeed = 0;
+    float holdJumpForce = 0;
+
 
 
     void Awake()
@@ -58,9 +65,22 @@ public class PlatformerCharacter2D : MonoBehaviour
 	}
 
 
+    /************************************/
+    /*          GAME LOGIC              */
+    /************************************/
 	public void Move(float move, bool crouch, bool jump, bool jumpButtonPressed)
 	{
-
+        if(!jump && jumpButtonPressed)
+        {
+            timer += Time.deltaTime;
+            if (timer >= 100)
+                timer = 100;
+        }
+        else
+        {
+            holdJumpForce = timer;
+            timer = 0;
+        }
 
 		// If crouching, check to see if the character can stand up
 		if(!crouch && anim.GetBool("Crouch"))
@@ -101,14 +121,12 @@ public class PlatformerCharacter2D : MonoBehaviour
         //only control the player if airControl is turned on
         else if (airControl>0 && inAir())
         {
-
-            float move2 = move * airControl / 100;
-
             // The Speed animator parameter is set to the absolute value of the horizontal input.
             anim.SetFloat("Speed", Mathf.Abs(move));
 
             // Move the character
-            GetComponent<Rigidbody2D>().velocity = new Vector2(move * maxSpeed, GetComponent<Rigidbody2D>().velocity.y);
+            airControlSpeed = (-initJumpDirection == Mathf.Sign(move) ? maxSpeed * airControl : maxSpeed);
+            GetComponent<Rigidbody2D>().velocity = new Vector2(move * airControlSpeed, GetComponent<Rigidbody2D>().velocity.y);
 
             // If the input is moving the player right and the player is facing left...
             if (move > 0 && !facingRight)
@@ -138,24 +156,29 @@ public class PlatformerCharacter2D : MonoBehaviour
 
         if (jump)
         {
+            initJumpDirection = Mathf.Sign(move);
             currentNumberOfJump++;
         }
 
-        
 
-        if (canJump() && jumpButtonPressed && timer < jumpTime)
+
+        if (canJump() && jumpButtonPressed)
         {
             //Calculate how far through the jump we are as a percentage
             //apply the full jump force on the first frame, then apply less force
             //each consecutive frame
 
-            float proportionCompleted = (1 - (timer / jumpTime))*0.1f;
-            GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, proportionCompleted*jumpForce));
-            timer += Time.deltaTime;
+            float proportionCompleted = (1 - (timer / jumpTime)) * 0.1f;
+            anim.SetBool("Ground", false);
+
+            GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, jumpForce));
+            // don juan
+            //GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, proportionCompleted * jumpForce));
+            //timer += Time.deltaTime;
         }
 
-        Debug.Log("jump button pressed : " + jumpButtonPressed);
-        Debug.Log("jump timer : " + timer);
+        // Debug.Log("jump button pressed : " + jumpButtonPressed);
+        // Debug.Log("jump timer : " + timer);
 
         if (!jumpButtonPressed)
             timer = 0;
