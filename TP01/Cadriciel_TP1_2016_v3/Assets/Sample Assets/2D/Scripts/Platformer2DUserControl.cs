@@ -6,6 +6,7 @@ public class Platformer2DUserControl : MonoBehaviour
 	private PlatformerCharacter2D character;
     private bool jump;
     private bool jumpButtonPressed;
+    private bool initTeleport, teleport;
 
 
 	void Awake()
@@ -27,6 +28,19 @@ public class Platformer2DUserControl : MonoBehaviour
         }
         else
             jumpButtonPressed = false;
+
+        // TELEPORTING
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            initTeleport = true;
+        }
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            teleport = true;
+        }
+        else
+            teleport = false;
+
 #else
 		if (Input.GetButtonDown("Jump")) jump = true;
 #endif
@@ -46,8 +60,13 @@ public class Platformer2DUserControl : MonoBehaviour
 		// Pass all parameters to the character control script.
 		character.Move( h, crouch , jump, jumpButtonPressed);
 
+        // Pass all the parameters for teleporting
+        character.Teleport(character.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition), initTeleport, teleport);
+
         // Reset the jump input once it has been used.
 	    jump = false;
-	}
+        initTeleport = false;
+
+    }
 
 }

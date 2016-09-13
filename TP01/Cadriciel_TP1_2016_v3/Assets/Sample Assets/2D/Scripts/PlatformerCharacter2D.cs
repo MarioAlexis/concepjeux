@@ -1,22 +1,26 @@
 ﻿using UnityEngine;
 
-public class PlatformerCharacter2D : MonoBehaviour 
+public class PlatformerCharacter2D : MonoBehaviour
 {
-	bool facingRight = true;							// For determining which way the player is currently facing.
+    bool facingRight = true;                            // For determining which way the player is currently facing.
 
-	[SerializeField] float maxSpeed = 10f;				// The fastest the player can travel in the x axis.
-	[SerializeField] float jumpForce = 400f;			// Amount of force added when the player jumps.
+    [SerializeField] float maxSpeed = 10f;              // The fastest the player can travel in the x axis.
+    [SerializeField] float jumpForce = 400f;			// Amount of force added when the player jumps.
     [SerializeField] float jumpTime = 1f;
 
     [Range(0, 1)]
-	[SerializeField] float crouchSpeed = .36f;			// Amount of maxSpeed applied to crouching movement. 1 = 100%
-	
+    [SerializeField] float crouchSpeed = .36f;          // Amount of maxSpeed applied to crouching movement. 1 = 100%
+
     [Range(0, 1)]
-	[SerializeField] float airControl = 0;			    // Whether or not a player can steer while jumping;
+    [SerializeField] float airControl = 0;			    // Whether or not a player can steer while jumping;
     [SerializeField] float numberMaxOfConsecutivesJumps = 1;// Max Number Of Jump;
-    [SerializeField] LayerMask whatIsGround;			// A mask determining what is ground to the character
-	
-	Transform groundCheck;								// A position marking where to check if the player is grounded.
+    [SerializeField] LayerMask whatIsGround;            // A mask determining what is ground to the character
+    [SerializeField] bool keepSpeedOnTeleport;          // Player is able to keep his initial speed when teleporting
+    [SerializeField] float maxTeleportRadius;			// Set a maximum radius/distance for teleportation
+
+
+
+    Transform groundCheck;								// A position marking where to check if the player is grounded.
 	float groundedRadius = .2f;							// Radius of the overlap circle to determine if grounded
 	bool grounded = false;								// Whether or not the player is grounded.
 	Transform ceilingCheck;								// A position marking where to check for ceilings
@@ -30,7 +34,12 @@ public class PlatformerCharacter2D : MonoBehaviour
     float airControlSpeed = 0;
     bool initjump = false;
     float holdJumpForce = 0;
-
+    //teleport variables
+    private GameObject line;
+    private GameObject shadow;
+    private LineRendererController lineControl;
+    private bool initTeleport = false;
+    private float actualRadius = 0f;
 
 
     void Awake()
@@ -185,6 +194,43 @@ public class PlatformerCharacter2D : MonoBehaviour
 
         //if (!jumpButtonPressed)
         //    timer = 0;
+    }
+
+    public void Teleport(Vector2 charPos, Vector2 mousePos, bool initTP, bool TP)
+    {
+        if (initTP && TP)
+        {
+            initTeleport = true;
+        }
+        else if (!initTP && TP && initTeleport)
+        {
+            actualRadius = Vector2.Distance(mousePos, charPos);
+            if (line == null && actualRadius < maxTeleportRadius)
+            {
+                line = Instantiate(Resources.Load("LineREnderer", typeof(GameObject))) as GameObject;
+                lineControl = line.GetComponent<LineRendererController>();
+                shadow = Instantiate(Resources.Load("TeleportShadow", typeof(GameObject)), mousePos, Quaternion.identity, line.transform) as GameObject;
+                shadow.transform.localScale = this.transform.localScale;
+            }
+            else if(line != null)
+            {
+                if(actualRadius > maxTeleportRadius)
+                {
+                    Destroy(line);
+                }
+                else
+                {
+                    lineControl.setLineParameters(charPos, mousePos);
+                    shadow.transform.position = mousePos;
+                }
+            }
+        }
+        else if (!initTP && !TP)
+        {
+            if (line != null)
+                Destroy(line);
+            initTeleport = false;
+        }
     }
 
 	
