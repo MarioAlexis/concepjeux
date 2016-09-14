@@ -41,7 +41,6 @@ public class PlatformerCharacter2D : MonoBehaviour
     private bool initTeleport = false;
     private float actualRadius = 0f;
 
-
     void Awake()
 	{
 		// Setting up references.
@@ -205,18 +204,26 @@ public class PlatformerCharacter2D : MonoBehaviour
         else if (!initTP && TP && initTeleport)
         {
             actualRadius = Vector2.Distance(mousePos, charPos);
+            RaycastHit2D hit = Physics2D.Raycast(charPos, mousePos, actualRadius + this.GetComponent<Renderer>().bounds.size.x);
+
             if (line == null && actualRadius < maxTeleportRadius)
             {
+                Vector2 newPoint = mousePos;
+                if(hit.collider != null)
+                {
+                    Debug.Log("HIT !!! --- with " + hit.collider.name);
+                    newPoint = hit.point;
+                }
                 line = Instantiate(Resources.Load("LineREnderer", typeof(GameObject))) as GameObject;
                 lineControl = line.GetComponent<LineRendererController>();
-                shadow = Instantiate(Resources.Load("TeleportShadow", typeof(GameObject)), mousePos, Quaternion.identity, line.transform) as GameObject;
+                shadow = Instantiate(Resources.Load("TeleportShadow", typeof(GameObject)), newPoint, Quaternion.identity, line.transform) as GameObject;
                 shadow.transform.localScale = this.transform.localScale;
             }
             else if(line != null)
             {
                 if(actualRadius > maxTeleportRadius)
                 {
-                    Destroy(line);
+                    //Destroy(line);
                 }
                 else
                 {
@@ -228,7 +235,7 @@ public class PlatformerCharacter2D : MonoBehaviour
         else if (!initTP && !TP)
         {
             if (line != null)
-                Destroy(line);
+                //Destroy(line);
             initTeleport = false;
         }
     }
