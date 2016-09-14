@@ -209,14 +209,13 @@ public class PlatformerCharacter2D : MonoBehaviour
         else if (!initTP && TP && initTeleport)
         {
             actualRadius = Vector2.Distance(mousePos, charPos);
-            hit = Physics2D.Raycast(charPos, mousePos, actualRadius /*+ this.GetComponent<Renderer>().bounds.size.x*/, ~ignoreHitMask);
+            hit = Physics2D.Raycast(charPos, mousePos-charPos, actualRadius, ~ignoreHitMask);
 
             if (line == null && actualRadius < maxTeleportRadius)
             {
                 Vector2 newPoint = mousePos;
                 if (hit.collider != null)
                 {
-                    Debug.Log("HIT !!! --- with " + hit.collider.name);
                     newPoint = hit.point;
                 }
                 line = Instantiate(Resources.Load("LineREnderer", typeof(GameObject))) as GameObject;
@@ -232,19 +231,19 @@ public class PlatformerCharacter2D : MonoBehaviour
                 }
                 else
                 {
+                    Debug.Log("char :" + charPos + "\nmouse" + mousePos);
                     actualRadius = Vector2.Distance(mousePos, charPos);
-                    hit = Physics2D.Raycast(charPos, mousePos-charPos, actualRadius /*+ this.GetComponent<Renderer>().bounds.size.x*/, ~ignoreHitMask);
-                    Debug.DrawRay(charPos, mousePos, Color.black, 10f);
+                    hit = Physics2D.Raycast(charPos, mousePos-charPos, actualRadius, ~ignoreHitMask);
                     Vector2 newPoint = mousePos;
                     if (hit.collider != null)
                     {
-                        Debug.Log("distance" + actualRadius);
-                        Debug.Log("fraction" + hit.fraction);
-                        Debug.Log("mouse position" + mousePos);
-                        Debug.Log("HIT !!! --- with " + hit.collider.name);
-                        newPoint = hit.point;
-                        Debug.Log("hit position" + newPoint);
-
+                        Debug.Log(shadow.GetComponent<Renderer>().bounds.size.x);
+                        if(mousePos.x > charPos.x)
+                        {
+                            newPoint = new Vector2(hit.point.x - shadow.GetComponent<SpriteRenderer>().bounds.size.x, hit.point.y);
+                        }
+                        else
+                            newPoint = hit.point;
                     }
                     lineControl.setLineParameters(charPos, newPoint);
                     shadow.transform.position = newPoint;
