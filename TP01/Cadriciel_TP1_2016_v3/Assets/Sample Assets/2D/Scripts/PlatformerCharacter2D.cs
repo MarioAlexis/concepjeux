@@ -40,6 +40,8 @@ public class PlatformerCharacter2D : MonoBehaviour
     private LineRendererController lineControl;
     private bool initTeleport = false;
     private float actualRadius = 0f;
+    private RaycastHit2D hit;
+    private LayerMask ignoreHitMask;
 
     void Awake()
 	{
@@ -47,6 +49,9 @@ public class PlatformerCharacter2D : MonoBehaviour
 		groundCheck = transform.Find("GroundCheck");
 		ceilingCheck = transform.Find("CeilingCheck");
 		anim = GetComponent<Animator>();
+
+        // Getting layerMask to ingore in rayCastHit2D
+        ignoreHitMask =  (1 << (LayerMask.NameToLayer("Characters"))) |  (1 << (LayerMask.NameToLayer("Background")));
 	}
 
     bool inAir()
@@ -204,12 +209,12 @@ public class PlatformerCharacter2D : MonoBehaviour
         else if (!initTP && TP && initTeleport)
         {
             actualRadius = Vector2.Distance(mousePos, charPos);
-            RaycastHit2D hit = Physics2D.Raycast(charPos, mousePos, actualRadius + this.GetComponent<Renderer>().bounds.size.x);
+            hit = Physics2D.Raycast(charPos, mousePos, actualRadius /*+ this.GetComponent<Renderer>().bounds.size.x*/, ~ignoreHitMask);
 
             if (line == null && actualRadius < maxTeleportRadius)
             {
                 Vector2 newPoint = mousePos;
-                if(hit.collider != null)
+                if (hit.collider != null)
                 {
                     Debug.Log("HIT !!! --- with " + hit.collider.name);
                     newPoint = hit.point;
@@ -223,19 +228,33 @@ public class PlatformerCharacter2D : MonoBehaviour
             {
                 if(actualRadius > maxTeleportRadius)
                 {
-                    //Destroy(line);
+                    Destroy(line);
                 }
                 else
                 {
-                    lineControl.setLineParameters(charPos, mousePos);
-                    shadow.transform.position = mousePos;
+                    actualRadius = Vector2.Distance(mousePos, charPos);
+                    hit = Physics2D.Raycast(charPos, mousePos-charPos, actualRadius /*+ this.GetComponent<Renderer>().bounds.size.x*/, ~ignoreHitMask);
+                    Debug.DrawRay(charPos, mousePos, Color.black, 10f);
+                    Vector2 newPoint = mousePos;
+                    if (hit.collider != null)
+                    {
+                        Debug.Log("distance" + actualRadius);
+                        Debug.Log("fraction" + hit.fraction);
+                        Debug.Log("mouse position" + mousePos);
+                        Debug.Log("HIT !!! --- with " + hit.collider.name);
+                        newPoint = hit.point;
+                        Debug.Log("hit position" + newPoint);
+
+                    }
+                    lineControl.setLineParameters(charPos, newPoint);
+                    shadow.transform.position = newPoint;
                 }
             }
         }
         else if (!initTP && !TP)
         {
             if (line != null)
-                //Destroy(line);
+                Destroy(line);
             initTeleport = false;
         }
     }
