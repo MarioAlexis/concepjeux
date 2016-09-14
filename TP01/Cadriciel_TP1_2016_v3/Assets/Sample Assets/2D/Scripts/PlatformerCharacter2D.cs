@@ -6,30 +6,41 @@ public class PlatformerCharacter2D : MonoBehaviour
 
 	[SerializeField] float maxSpeed = 10f;				// The fastest the player can travel in the x axis.
 	[SerializeField] float jumpForce = 400f;			// Amount of force added when the player jumps.
-    [SerializeField] float jumpTime = 1f;
+    [SerializeField] float wallJumpForce = 400f;		// Amount of force added when the player jumps against walls.
+    [SerializeField] float jumpTime = 1f;               // Duration of a jump
+    [SerializeField] bool verticalSpeedRestartAtJump=true;	// Is the vertical speed reset when we jump
 
     [Range(0, 1)]
 	[SerializeField] float crouchSpeed = .36f;			// Amount of maxSpeed applied to crouching movement. 1 = 100%
-	
-	[SerializeField] float airControl = 1;			    // Whether or not a player can steer while jumping;
+
+    [Range(0, 1)]
+    [SerializeField] float reductionConsecutiveJump = 1f;// Power reduction between 2 consecutive Jump. 1 = 100% = no reduction. 0 = big reduction.
+
+    [SerializeField] float airControl = 1;			    // Whether or not a player can steer while jumping;
     [SerializeField] float numberMaxOfConsecutivesJumps = 1;// Max Number Of Jump;
     [SerializeField] LayerMask whatIsGround;			// A mask determining what is ground to the character
+
 	
 	Transform groundCheck;								// A position marking where to check if the player is grounded.
-	float groundedRadius = .2f;							// Radius of the overlap circle to determine if grounded
+    Transform wallCheck;                                // A position marking where to check if the player is against a wall.
+    float groundedRadius = .2f;							// Radius of the overlap circle to determine if grounded
 	bool grounded = false;								// Whether or not the player is grounded.
-	Transform ceilingCheck;								// A position marking where to check for ceilings
+    bool againstWall = false;                           // Whether or not the player is against a wall.
+    Transform ceilingCheck;								// A position marking where to check for ceilings
 	float ceilingRadius = .01f;							// Radius of the overlap circle to determine if the player can stand up
 	Animator anim;										// Reference to the player's animator component.
     float currentNumberOfJump = 0;
     float timer = 0;                                    // timer in jump
-
+    float initialJumpPower = 0.15f;
+    float powerJump;
+    bool blockJump = false;
 
     void Awake()
 	{
 		// Setting up references.
 		groundCheck = transform.Find("GroundCheck");
 		ceilingCheck = transform.Find("CeilingCheck");
+        wallCheck = transform.Find("WallCheck");
 		anim = GetComponent<Animator>();
 	}
 
@@ -40,7 +51,7 @@ public class PlatformerCharacter2D : MonoBehaviour
 
     bool canJump()
     {
-        return currentNumberOfJump <= numberMaxOfConsecutivesJumps;
+        return currentNumberOfJump < numberMaxOfConsecutivesJumps;
     }
 
 
@@ -48,7 +59,8 @@ public class PlatformerCharacter2D : MonoBehaviour
 	{
 		// The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
 		grounded = Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsGround);
-		anim.SetBool("Ground", grounded);
+        againstWall = Physics2D.OverlapCircle(wallCheck.position, groundedRadius, whatIsGround);
+        anim.SetBool("Ground", grounded);
 
 		// Set the vertical animation
 		anim.SetFloat("vSpeed", GetComponent<Rigidbody2D>().velocity.y);
@@ -56,6 +68,18 @@ public class PlatformerCharacter2D : MonoBehaviour
         if (inAir() && currentNumberOfJump == 0)
             currentNumberOfJump = 1;
 	}
+
+    void InitializeJump()
+    {
+        currentNumberOfJump++;
+        if (verticalSpeedRestartAtJump)
+            GetComponent<Rigidbody2D>().velocity = new Vector2(GetComponent<Rigidbody2D>().velocity.x, 0f);
+        if (currentNumberOfJump > 1)
+        {
+            powerJump *= (reductionConsecutiveJump/5f)+0.8f;
+        }
+
+    }
 
 
 	public void Move(float move, bool crouch, bool jump, bool jumpButtonPressed)
@@ -77,7 +101,11 @@ public class PlatformerCharacter2D : MonoBehaviour
 		if(grounded)
 		{
             currentNumberOfJump = 0;
-            timer = 0;
+            powerJump = initialJumpPower;
+            if (numberMaxOfConsecutivesJumps == 0)
+                blockJump = true;
+            else
+                blockJump = false;
 
             // Reduce the speed if crouching by the crouchSpeed multiplier
             move = (crouch ? move * crouchSpeed : move);
@@ -101,8 +129,6 @@ public class PlatformerCharacter2D : MonoBehaviour
         //only control the player if airControl is turned on
         else if (airControl>0 && inAir())
         {
-
-            float move2 = move * airControl / 100;
 
             // The Speed animator parameter is set to the absolute value of the horizontal input.
             anim.SetFloat("Speed", Mathf.Abs(move));
@@ -136,26 +162,44 @@ public class PlatformerCharacter2D : MonoBehaviour
             currentNumberOfJump++;
         }*/
 
-        if (jump)
+        if (againstWall)
         {
-            currentNumberOfJump++;
+            blockJump = true;
         }
 
-        
+        if (jump && canJump() && !againstWall)
+        {
+            InitializeJump();
+        }
 
-        if (canJump() && jumpButtonPressed && timer < jumpTime)
+        if (jump && againstWall)
+        {
+            GetComponent<Rigidbody2D>().AddForce(new Vector2(wallJumpForce, 0f));
+        }
+
+        if (!jumpButtonPressed)
+        {
+            timer = 0;
+            if (!canJump())
+                blockJump = true;
+            else if (!againstWall)
+                blockJump = false;
+        }
+
+        if (jumpButtonPressed && timer < jumpTime && !blockJump)
         {
             //Calculate how far through the jump we are as a percentage
             //apply the full jump force on the first frame, then apply less force
             //each consecutive frame
 
-            float proportionCompleted = (1 - Mathf.Sqrt(Mathf.Sqrt(timer / jumpTime))) * 0.1f;
+            float proportionCompleted = (1 - Mathf.Sqrt(Mathf.Sqrt(timer / jumpTime))) * powerJump;
             GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, proportionCompleted*jumpForce));
             timer += Time.deltaTime;
         }
 
-        Debug.Log("jump button pressed : " + jumpButtonPressed);
-        Debug.Log("jump timer : " + timer);
+        //Debug.Log("jump button pressed : " + jumpButtonPressed);
+        //Debug.Log("jump timer : " + timer);
+        Debug.Log("against wall : " + againstWall);
 
         if (!jumpButtonPressed)
             timer = 0;
