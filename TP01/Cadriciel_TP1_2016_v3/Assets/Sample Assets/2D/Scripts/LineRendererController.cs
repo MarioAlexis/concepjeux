@@ -11,7 +11,7 @@ public class LineRendererController : MonoBehaviour {
     {
         line = GetComponent<LineRenderer>();
         line.sortingLayerName = "Foreground";
-        line.SetWidth(0.05f, 0.5F);
+        line.SetWidth(0.05f, 0.05F);
   	}
 	
 	// Update is called once per frame

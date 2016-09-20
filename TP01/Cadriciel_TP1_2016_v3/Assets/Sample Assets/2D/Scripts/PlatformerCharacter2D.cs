@@ -35,13 +35,16 @@ public class PlatformerCharacter2D : MonoBehaviour
     bool initjump = false;
     float holdJumpForce = 0;
     //teleport variables
-    private GameObject line;
+    private GameObject lineTop, lineBottom;
+    private LineRendererController lineControlTop, lineControlBottom;
     private GameObject shadow;
-    private LineRendererController lineControl;
+    private float charHeight;
     private bool initTeleport = false;
     private float actualRadius = 0f;
-    private RaycastHit2D hit;
+    private RaycastHit2D hitTop, hitMiddle, hitBottom;
     private LayerMask ignoreHitMask;
+    private ParticleSystem particleControl;
+    private GameObject teleportEffect;
 
     void Awake()
 	{
@@ -73,6 +76,10 @@ public class PlatformerCharacter2D : MonoBehaviour
 
 		// Set the vertical animation
 		anim.SetFloat("vSpeed", GetComponent<Rigidbody2D>().velocity.y);
+
+        if (particleControl != null)
+            if (!particleControl.IsAlive())
+                Destroy(teleportEffect);
 
         if (inAir() && currentNumberOfJump == 0)
             currentNumberOfJump = 1;
@@ -208,52 +215,100 @@ public class PlatformerCharacter2D : MonoBehaviour
         }
         else if (!initTP && TP && initTeleport)
         {
+            // Getting the distance between character and mouse position
             actualRadius = Vector2.Distance(mousePos, charPos);
-            hit = Physics2D.Raycast(charPos, mousePos-charPos, actualRadius, ~ignoreHitMask);
 
-            if (line == null && actualRadius < maxTeleportRadius)
+            // Dont Instantiate the "shadow" if the middle Raycast is hitting with a collider
+            hitMiddle = Physics2D.Raycast(charPos, mousePos - charPos, actualRadius + 0.5f, ~ignoreHitMask);
+
+            if (lineTop == null && lineBottom == null  && hitMiddle.collider == null && actualRadius < maxTeleportRadius)
             {
-                Vector2 newPoint = mousePos;
-                if (hit.collider != null)
-                {
-                    newPoint = hit.point;
-                }
-                line = Instantiate(Resources.Load("LineREnderer", typeof(GameObject))) as GameObject;
-                lineControl = line.GetComponent<LineRendererController>();
-                shadow = Instantiate(Resources.Load("TeleportShadow", typeof(GameObject)), newPoint, Quaternion.identity, line.transform) as GameObject;
+                // Instantiate "laser beam" at the top and bottom of the character
+                lineTop = Instantiate(Resources.Load("LineREnderer", typeof(GameObject))) as GameObject;
+                lineBottom = Instantiate(Resources.Load("LineREnderer", typeof(GameObject))) as GameObject;
+                lineControlTop = lineTop.GetComponent<LineRendererController>();
+                lineControlBottom = lineBottom.GetComponent<LineRendererController>();
+
+                // Instantiate character "shadow" for teleport location
+                shadow = Instantiate(Resources.Load("TeleportShadow", typeof(GameObject)), mousePos, Quaternion.identity) as GameObject;
                 shadow.transform.localScale = this.transform.localScale;
             }
-            else if(line != null)
+            else if(lineTop != null && lineBottom != null)
             {
                 if(actualRadius > maxTeleportRadius)
                 {
-                    Destroy(line);
+                    Destroy(lineTop);
+                    Destroy(lineBottom);
+                    Destroy(shadow);
                 }
-                else
+                else if(shadow != null)
                 {
-                    Debug.Log("char :" + charPos + "\nmouse" + mousePos);
-                    actualRadius = Vector2.Distance(mousePos, charPos);
-                    hit = Physics2D.Raycast(charPos, mousePos-charPos, actualRadius, ~ignoreHitMask);
-                    Vector2 newPoint = mousePos;
-                    if (hit.collider != null)
+                    Vector2 spriteBox = shadow.GetComponent<SpriteRenderer>().bounds.extents;
+                    charHeight = spriteBox.y;
+                    Vector2 topPoint = new Vector2(mousePos.x, mousePos.y + spriteBox.y);
+                    Vector2 bottomPoint = new Vector2(mousePos.x, mousePos.y - spriteBox.y);
+
+                    float distTop = Vector2.Distance(charPos, topPoint);
+                    float distBottom = Vector2.Distance(charPos, bottomPoint);
+
+                    hitTop = Physics2D.Raycast(charPos, topPoint - charPos, distTop, ~ignoreHitMask);
+                    hitMiddle = Physics2D.Raycast(charPos, mousePos - charPos, actualRadius, ~ignoreHitMask);
+                    hitBottom = Physics2D.Raycast(charPos, bottomPoint - charPos, distBottom, ~ignoreHitMask);
+
+                    if(hitTop.collider != null  ||  hitMiddle.collider != null || hitBottom.collider != null)
                     {
-                        Debug.Log(shadow.GetComponent<Renderer>().bounds.size.x);
-                        if(mousePos.x > charPos.x)
-                        {
-                            newPoint = new Vector2(hit.point.x - shadow.GetComponent<SpriteRenderer>().bounds.size.x, hit.point.y);
-                        }
-                        else
-                            newPoint = hit.point;
+                        Destroy(shadow);
+                        topPoint = (hitTop.collider != null ? hitTop.point : topPoint);
+                        bottomPoint = (hitBottom.collider != null ? hitBottom.point : bottomPoint);
                     }
-                    lineControl.setLineParameters(charPos, newPoint);
-                    shadow.transform.position = newPoint;
+
+                    lineControlTop.setLineParameters(charPos, topPoint);
+                    lineControlBottom.setLineParameters(charPos, bottomPoint);
+
+                    shadow.transform.localScale = this.transform.localScale;
+                    shadow.transform.position = mousePos;
+                }
+                else if (shadow == null)
+                {
+                    Vector2 topPoint = new Vector2(mousePos.x, mousePos.y + charHeight);
+                    Vector2 bottomPoint = new Vector2(mousePos.x, mousePos.y - charHeight);
+
+                    float distTop = Vector2.Distance(charPos, topPoint);
+                    float distBottom = Vector2.Distance(charPos, bottomPoint);
+
+                    hitTop = Physics2D.Raycast(charPos, topPoint - charPos, distTop, ~ignoreHitMask);
+                    hitMiddle = Physics2D.Raycast(charPos, mousePos - charPos, actualRadius, ~ignoreHitMask);
+                    hitBottom = Physics2D.Raycast(charPos, bottomPoint - charPos, distBottom, ~ignoreHitMask);
+
+                    if (hitTop.collider == null  && hitMiddle.collider == null && hitBottom.collider == null)
+                    {
+                        shadow = Instantiate(Resources.Load("TeleportShadow", typeof(GameObject)), mousePos, Quaternion.identity) as GameObject;
+                        shadow.transform.localScale = this.transform.localScale;
+                    }
+                    else
+                    {
+                        topPoint = (hitTop.collider != null ? hitTop.point : topPoint);
+                        bottomPoint = (hitBottom.collider != null ? hitBottom.point : bottomPoint);
+                    }
+
+                    lineControlTop.setLineParameters(charPos, topPoint);
+                    lineControlBottom.setLineParameters(charPos, bottomPoint);
+
                 }
             }
         }
-        else if (!initTP && !TP)
+        else if (!initTP && !TP && initTeleport)
         {
-            if (line != null)
-                Destroy(line);
+            if (lineTop != null && shadow != null)
+            {
+                Destroy(lineTop);
+                Destroy(lineBottom);
+                Destroy(shadow);
+                teleportEffect = Instantiate(Resources.Load("TeleportEffect", typeof(GameObject)), mousePos, Quaternion.identity) as GameObject;
+                particleControl = teleportEffect.GetComponent<ParticleSystem>();
+                this.transform.position = mousePos;
+            }
+
             initTeleport = false;
         }
     }
