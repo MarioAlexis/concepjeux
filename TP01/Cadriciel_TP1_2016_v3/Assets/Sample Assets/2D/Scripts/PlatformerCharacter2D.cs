@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class PlatformerCharacter2D : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class PlatformerCharacter2D : MonoBehaviour
     [SerializeField] LayerMask whatIsGround;            // A mask determining what is ground to the character
     [SerializeField] bool keepSpeedOnTeleport;          // Player is able to keep his initial speed when teleporting
     [SerializeField] float maxTeleportRadius;			// Set a maximum radius/distance for teleportation
+    [SerializeField] float cooldownTeleportSec;         // Set the cooldown for the teleport effect in Second
+    [SerializeField] Transform TeleportCooldownBar;     // Select the UI element which the character manipulate on teleport action
 
 
 
@@ -43,8 +46,10 @@ public class PlatformerCharacter2D : MonoBehaviour
     private float actualRadius = 0f;
     private RaycastHit2D hitTop, hitMiddle, hitBottom;
     private LayerMask ignoreHitMask;
-    private ParticleSystem particleControl;
+    private ParticleSystem teleportarticleControl;
     private GameObject teleportEffect;
+    private Image teleportLoadingBar;
+    private bool isTeleportRdy = true;
 
     void Awake()
 	{
@@ -52,6 +57,11 @@ public class PlatformerCharacter2D : MonoBehaviour
 		groundCheck = transform.Find("GroundCheck");
 		ceilingCheck = transform.Find("CeilingCheck");
 		anim = GetComponent<Animator>();
+
+        // Set the Teleport cooldown as ready at the begin
+        teleportLoadingBar = TeleportCooldownBar.GetComponent<Image>();
+        teleportLoadingBar.fillAmount = 1.0f;
+        isTeleportRdy = true;
 
         // Getting layerMask to ingore in rayCastHit2D
         ignoreHitMask =  (1 << (LayerMask.NameToLayer("Characters"))) |  (1 << (LayerMask.NameToLayer("Background")));
@@ -77,9 +87,20 @@ public class PlatformerCharacter2D : MonoBehaviour
 		// Set the vertical animation
 		anim.SetFloat("vSpeed", GetComponent<Rigidbody2D>().velocity.y);
 
-        if (particleControl != null)
-            if (!particleControl.IsAlive())
+        if (teleportarticleControl != null)
+            if (!teleportarticleControl.IsAlive())
                 Destroy(teleportEffect);
+        if (!isTeleportRdy)
+        {
+            float addFilledAmount = Time.deltaTime / cooldownTeleportSec;
+            float currentLoading = teleportLoadingBar.fillAmount;
+            teleportLoadingBar.fillAmount = currentLoading + addFilledAmount;
+            if (teleportLoadingBar.fillAmount >= 1.0f)
+            {
+                teleportLoadingBar.fillAmount = 1.0f;
+                isTeleportRdy = true;
+            }
+        }
 
         if (inAir() && currentNumberOfJump == 0)
             currentNumberOfJump = 1;
@@ -209,7 +230,7 @@ public class PlatformerCharacter2D : MonoBehaviour
 
     public void Teleport(Vector2 charPos, Vector2 mousePos, bool initTP, bool TP)
     {
-        if (initTP && TP)
+        if (initTP && TP && isTeleportRdy)
         {
             initTeleport = true;
         }
@@ -299,14 +320,22 @@ public class PlatformerCharacter2D : MonoBehaviour
         }
         else if (!initTP && !TP && initTeleport)
         {
-            if (lineTop != null && shadow != null)
+            if (lineTop != null && lineBottom != null && shadow != null)
             {
                 Destroy(lineTop);
                 Destroy(lineBottom);
                 Destroy(shadow);
                 teleportEffect = Instantiate(Resources.Load("TeleportEffect", typeof(GameObject)), mousePos, Quaternion.identity) as GameObject;
-                particleControl = teleportEffect.GetComponent<ParticleSystem>();
+                teleportarticleControl = teleportEffect.GetComponent<ParticleSystem>();
                 this.transform.position = mousePos;
+                TeleportCooldownBar.GetComponent<Image>().fillAmount = 0.0f;
+                isTeleportRdy = false;
+            }
+            else if(shadow == null)
+            {
+                Destroy(lineTop);
+                Destroy(lineBottom);
+                Destroy(shadow);
             }
 
             initTeleport = false;
