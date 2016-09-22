@@ -162,10 +162,10 @@ public class PlatformerCharacter2D : MonoBehaviour
             currentNumberOfJump++;
         }*/
 
-        if (againstWall)
+        /*if (againstWall)
         {
             blockJump = true;
-        }
+        }*/
 
         if (jump && canJump() && !againstWall)
         {
@@ -174,7 +174,7 @@ public class PlatformerCharacter2D : MonoBehaviour
 
         if (jump && againstWall)
         {
-            GetComponent<Rigidbody2D>().AddForce(new Vector2(wallJumpForce, 0f));
+            GetComponent<Rigidbody2D>().AddForce(new Vector2(wallJumpForce, wallJumpForce/10f));
         }
 
         if (!jumpButtonPressed)
@@ -182,8 +182,6 @@ public class PlatformerCharacter2D : MonoBehaviour
             timer = 0;
             if (!canJump())
                 blockJump = true;
-            else if (!againstWall)
-                blockJump = false;
         }
 
         if (jumpButtonPressed && timer < jumpTime && !blockJump)
