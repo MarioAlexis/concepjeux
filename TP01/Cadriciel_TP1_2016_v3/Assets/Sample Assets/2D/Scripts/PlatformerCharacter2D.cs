@@ -192,22 +192,6 @@ public class PlatformerCharacter2D : MonoBehaviour
                 Flip();
         }
 
-        // If the player should jump...
-        /*if (grounded && jump) {
-            // Add a vertical force to the player.
-            anim.SetBool("Ground", false);
-            GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, jumpForce));
-        }*/
-
-        // If the player should jump...
-        /*if (jump && currentNumberOfJump<numberMaxOfConsecutivesJumps)
-        {
-            // Add a vertical force to the player.
-            anim.SetBool("Ground", false);
-            GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, jumpForce));
-            currentNumberOfJump++;
-        }*/
-
         if (againstWall)
         {
             blockJump = true;
@@ -243,8 +227,6 @@ public class PlatformerCharacter2D : MonoBehaviour
             timer += Time.deltaTime;
         }
 
-        //Debug.Log("jump button pressed : " + jumpButtonPressed);
-        //Debug.Log("jump timer : " + timer);
         Debug.Log("against wall : " + againstWall);
 
         if (!jumpButtonPressed)
