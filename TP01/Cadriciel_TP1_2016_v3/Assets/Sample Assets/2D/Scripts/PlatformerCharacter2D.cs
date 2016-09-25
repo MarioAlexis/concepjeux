@@ -44,7 +44,9 @@ public class PlatformerCharacter2D : MonoBehaviour
     private GameObject lineTop, lineBottom;
     private LineRendererController lineControlTop, lineControlBottom;
     private GameObject shadow;
-    private float charHeight;
+    private Vector2 shadow_topPoint, shadow_diagonalBottomPoint;
+    private float shadow_height, shadow_width;
+    private bool shadow_isOverLapping;
     private bool initTeleport = false;
     private float actualRadius = 0f;
     private RaycastHit2D hitTop, hitMiddle, hitBottom;
@@ -70,9 +72,6 @@ public class PlatformerCharacter2D : MonoBehaviour
         teleportLoadingBar = TeleportCooldownBar.GetComponent<Image>();
         teleportLoadingBar.fillAmount = 1.0f;
         isTeleportRdy = true;
-
-        // Getting layerMask to ingore in rayCastHit2D
-        ignoreHitMask =  (1 << (LayerMask.NameToLayer("Characters"))) |  (1 << (LayerMask.NameToLayer("Background")));
 	}
 
     bool inAir()
@@ -96,9 +95,12 @@ public class PlatformerCharacter2D : MonoBehaviour
 		// Set the vertical animation
 		anim.SetFloat("vSpeed", GetComponent<Rigidbody2D>().velocity.y);
 
+        // Destroy the teleport shockwave particles system if is not active
         if (teleportarticleControl != null)
             if (!teleportarticleControl.IsAlive())
                 Destroy(teleportEffect);
+
+        // if the teleport state is not ready. This mean we need to increase the teleport loading bar
         if (!isTeleportRdy)
         {
             float addFilledAmount = Time.deltaTime / cooldownTeleportSec;
@@ -244,20 +246,31 @@ public class PlatformerCharacter2D : MonoBehaviour
             // Getting the distance between character and mouse position
             actualRadius = Vector2.Distance(mousePos, charPos);
 
-            // Dont Instantiate the "shadow" if the middle Raycast is hitting with a collider
-            hitMiddle = Physics2D.Raycast(charPos, mousePos - charPos, actualRadius + 0.5f, ~ignoreHitMask);
-
-            if (lineTop == null && lineBottom == null  && hitMiddle.collider == null && actualRadius < maxTeleportRadius)
+            if (lineTop == null && lineBottom == null  && actualRadius < maxTeleportRadius)
             {
+                // Instantiate the shadow but in disable mode --> this will allow to get the size of the shadow
+                shadow = Instantiate(Resources.Load("TeleportShadow", typeof(GameObject)), mousePos, Quaternion.identity) as GameObject;
+                shadow.transform.localScale = this.transform.localScale;
+                shadow.SetActive(false);
+                
+                // Get the height and the wodth of the character shadow
+                shadow_height = shadow.GetComponent<SpriteRenderer>().bounds.extents.y;
+                shadow_width = shadow.GetComponent<SpriteRenderer>().bounds.extents.x;
+
+                // Get Vector of opposite diagonal point to make a rectagular shape
+                shadow_topPoint = new Vector2(mousePos.x - shadow_width, mousePos.y + shadow_height);
+                shadow_diagonalBottomPoint = new Vector2(mousePos.x + shadow_width, mousePos.y - shadow_height);
+
+                // Check if the shadow is over lapping with "what is ground layer"
+                shadow_isOverLapping = Physics2D.OverlapArea(shadow_topPoint, shadow_diagonalBottomPoint, whatIsGround);
+
+                shadow.SetActive(!shadow_isOverLapping);
+
                 // Instantiate "laser beam" at the top and bottom of the character
                 lineTop = Instantiate(Resources.Load("LineREnderer", typeof(GameObject))) as GameObject;
                 lineBottom = Instantiate(Resources.Load("LineREnderer", typeof(GameObject))) as GameObject;
                 lineControlTop = lineTop.GetComponent<LineRendererController>();
                 lineControlBottom = lineBottom.GetComponent<LineRendererController>();
-
-                // Instantiate character "shadow" for teleport location
-                shadow = Instantiate(Resources.Load("TeleportShadow", typeof(GameObject)), mousePos, Quaternion.identity) as GameObject;
-                shadow.transform.localScale = this.transform.localScale;
             }
             else if(lineTop != null && lineBottom != null)
             {
@@ -267,26 +280,20 @@ public class PlatformerCharacter2D : MonoBehaviour
                     Destroy(lineBottom);
                     Destroy(shadow);
                 }
-                else if(shadow != null)
+                else if(shadow.activeSelf)
                 {
-                    Vector2 spriteBox = shadow.GetComponent<SpriteRenderer>().bounds.extents;
-                    charHeight = spriteBox.y;
-                    Vector2 topPoint = new Vector2(mousePos.x, mousePos.y + spriteBox.y);
-                    Vector2 bottomPoint = new Vector2(mousePos.x, mousePos.y - spriteBox.y);
+                    // Get point for the red line visual
+                    Vector2 topPoint = new Vector2(mousePos.x, mousePos.y + shadow_height);
+                    Vector2 bottomPoint = new Vector2(mousePos.x, mousePos.y - shadow_height);
 
-                    float distTop = Vector2.Distance(charPos, topPoint);
-                    float distBottom = Vector2.Distance(charPos, bottomPoint);
+                    // Get Vector of opposite diagonal point to make a rectagular shape
+                    shadow_topPoint = new Vector2(mousePos.x - shadow_width, mousePos.y + shadow_height);
+                    shadow_diagonalBottomPoint = new Vector2(mousePos.x + shadow_width, mousePos.y - shadow_height);
 
-                    hitTop = Physics2D.Raycast(charPos, topPoint - charPos, distTop, ~ignoreHitMask);
-                    hitMiddle = Physics2D.Raycast(charPos, mousePos - charPos, actualRadius, ~ignoreHitMask);
-                    hitBottom = Physics2D.Raycast(charPos, bottomPoint - charPos, distBottom, ~ignoreHitMask);
+                    // Check if the shadow is over lapping with "what is ground layer"
+                    shadow_isOverLapping = Physics2D.OverlapArea(shadow_topPoint, shadow_diagonalBottomPoint, whatIsGround);
 
-                    if(hitTop.collider != null  ||  hitMiddle.collider != null || hitBottom.collider != null)
-                    {
-                        Destroy(shadow);
-                        topPoint = (hitTop.collider != null ? hitTop.point : topPoint);
-                        bottomPoint = (hitBottom.collider != null ? hitBottom.point : bottomPoint);
-                    }
+                    shadow.SetActive(!shadow_isOverLapping);
 
                     lineControlTop.setLineParameters(charPos, topPoint);
                     lineControlBottom.setLineParameters(charPos, bottomPoint);
@@ -294,28 +301,20 @@ public class PlatformerCharacter2D : MonoBehaviour
                     shadow.transform.localScale = this.transform.localScale;
                     shadow.transform.position = mousePos;
                 }
-                else if (shadow == null)
+                else if (!shadow.activeSelf)
                 {
-                    Vector2 topPoint = new Vector2(mousePos.x, mousePos.y + charHeight);
-                    Vector2 bottomPoint = new Vector2(mousePos.x, mousePos.y - charHeight);
+                    // Get point for the red line visual
+                    Vector2 topPoint = new Vector2(mousePos.x, mousePos.y + shadow_height);
+                    Vector2 bottomPoint = new Vector2(mousePos.x, mousePos.y - shadow_height);
 
-                    float distTop = Vector2.Distance(charPos, topPoint);
-                    float distBottom = Vector2.Distance(charPos, bottomPoint);
+                    // Get Vector of opposite diagonal point to make a rectagular shape
+                    shadow_topPoint = new Vector2(mousePos.x - shadow_width, mousePos.y + shadow_height);
+                    shadow_diagonalBottomPoint = new Vector2(mousePos.x + shadow_width, mousePos.y - shadow_height);
 
-                    hitTop = Physics2D.Raycast(charPos, topPoint - charPos, distTop, ~ignoreHitMask);
-                    hitMiddle = Physics2D.Raycast(charPos, mousePos - charPos, actualRadius, ~ignoreHitMask);
-                    hitBottom = Physics2D.Raycast(charPos, bottomPoint - charPos, distBottom, ~ignoreHitMask);
+                    // Check if the shadow is over lapping with "what is ground layer"
+                    shadow_isOverLapping = Physics2D.OverlapArea(shadow_topPoint, shadow_diagonalBottomPoint, whatIsGround);
 
-                    if (hitTop.collider == null  && hitMiddle.collider == null && hitBottom.collider == null)
-                    {
-                        shadow = Instantiate(Resources.Load("TeleportShadow", typeof(GameObject)), mousePos, Quaternion.identity) as GameObject;
-                        shadow.transform.localScale = this.transform.localScale;
-                    }
-                    else
-                    {
-                        topPoint = (hitTop.collider != null ? hitTop.point : topPoint);
-                        bottomPoint = (hitBottom.collider != null ? hitBottom.point : bottomPoint);
-                    }
+                    shadow.SetActive(!shadow_isOverLapping);
 
                     lineControlTop.setLineParameters(charPos, topPoint);
                     lineControlBottom.setLineParameters(charPos, bottomPoint);
@@ -323,9 +322,10 @@ public class PlatformerCharacter2D : MonoBehaviour
                 }
             }
         }
+        // Player release the shift button
         else if (!initTP && !TP && initTeleport)
         {
-            if (lineTop != null && lineBottom != null && shadow != null)
+            if (shadow.activeSelf)
             {
                 Destroy(lineTop);
                 Destroy(lineBottom);
@@ -336,7 +336,7 @@ public class PlatformerCharacter2D : MonoBehaviour
                 TeleportCooldownBar.GetComponent<Image>().fillAmount = 0.0f;
                 isTeleportRdy = false;
             }
-            else if(shadow == null)
+            else if(!shadow.activeSelf)
             {
                 Destroy(lineTop);
                 Destroy(lineBottom);
