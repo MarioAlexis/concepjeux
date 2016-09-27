@@ -49,8 +49,6 @@ public class PlatformerCharacter2D : MonoBehaviour
     private bool shadow_isOverLapping;
     private bool initTeleport = false;
     private float actualRadius = 0f;
-    private RaycastHit2D hitTop, hitMiddle, hitBottom;
-    private LayerMask ignoreHitMask;
     private ParticleSystem teleportarticleControl;
     private GameObject teleportEffect;
     private Image teleportLoadingBar;
@@ -276,12 +274,16 @@ public class PlatformerCharacter2D : MonoBehaviour
             {
                 if(actualRadius > maxTeleportRadius)
                 {
-                    Destroy(lineTop);
-                    Destroy(lineBottom);
-                    Destroy(shadow);
+                    shadow.SetActive(false);
+                    lineTop.SetActive(false);
+                    lineBottom.SetActive(false);
                 }
                 else if(shadow.activeSelf)
                 {
+                    // Set back the visual effect of the red lines
+                    lineTop.SetActive(true);
+                    lineBottom.SetActive(true);
+
                     // Get point for the red line visual
                     Vector2 topPoint = new Vector2(mousePos.x, mousePos.y + shadow_height);
                     Vector2 bottomPoint = new Vector2(mousePos.x, mousePos.y - shadow_height);
@@ -303,6 +305,10 @@ public class PlatformerCharacter2D : MonoBehaviour
                 }
                 else if (!shadow.activeSelf)
                 {
+                    // Set back the visual effect of the red lines
+                    lineTop.SetActive(true);
+                    lineBottom.SetActive(true);
+
                     // Get point for the red line visual
                     Vector2 topPoint = new Vector2(mousePos.x, mousePos.y + shadow_height);
                     Vector2 bottomPoint = new Vector2(mousePos.x, mousePos.y - shadow_height);
@@ -332,7 +338,9 @@ public class PlatformerCharacter2D : MonoBehaviour
                 Destroy(shadow);
                 teleportEffect = Instantiate(Resources.Load("TeleportEffect", typeof(GameObject)), mousePos, Quaternion.identity) as GameObject;
                 teleportarticleControl = teleportEffect.GetComponent<ParticleSystem>();
+                Vector2 charVelocity = (keepSpeedOnTeleport ? this.GetComponent<Rigidbody2D>().velocity : new Vector2(0.0f, 0.0f));
                 this.transform.position = mousePos;
+                this.GetComponent<Rigidbody2D>().velocity = charVelocity;
                 TeleportCooldownBar.GetComponent<Image>().fillAmount = 0.0f;
                 isTeleportRdy = false;
             }
