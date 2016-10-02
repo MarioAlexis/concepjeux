@@ -54,6 +54,21 @@ public class PlatformerCharacter2D : MonoBehaviour
     private Image teleportLoadingBar;
     private bool isTeleportRdy = true;
 
+    //Jump indicator variables
+    private GameObject maxHeightIndicator;
+    private LineRendererController maxHeightIndicatorControl;
+    private float maxHeight = 0;
+    private float tempTimer = 0;
+    private float detectForceChange = 0;
+    private float detectMassChange = 0;
+    [SerializeField]
+    bool drawJumpIndicator = false;
+    private float posinit = 0f;
+    private float posfinal = 0f;
+    private float vinit = 0f;
+    private float vfinal = 0f;
+    private float acceleration = 0f;
+
     float initialJumpPower = 0.15f;
     float powerJump;
     bool blockJump = false;
@@ -355,7 +370,59 @@ public class PlatformerCharacter2D : MonoBehaviour
         }
     }
 
-	
+    public void drawMaxJumpHeight(Vector2 charPos)
+    {
+        float gravity = GetComponent<Rigidbody2D>().gravityScale * Physics2D.gravity.magnitude;
+        if (drawJumpIndicator)
+        {
+            if (maxHeightIndicator == null && maxHeightIndicatorControl == null)
+            {
+                maxHeightIndicator = Instantiate(Resources.Load("LineREnderer", typeof(GameObject))) as GameObject;
+                maxHeightIndicatorControl = maxHeightIndicator.GetComponent<LineRendererController>();
+            }
+            //On relance le calcul si jumpForce a été modifié
+            if (detectForceChange != jumpForce || detectMassChange != GetComponent<Rigidbody2D>().mass)
+            {
+                tempTimer = 0;
+                acceleration = 0;
+                posinit = 0;
+                vinit = 0;
+                posfinal = 0;
+                vfinal = 0;
+                detectForceChange = jumpForce;
+                detectMassChange = GetComponent<Rigidbody2D>().mass;
+            }
+            //Calcul of the max height with the equations of motion
+            if (tempTimer < jumpTime)
+            {
+                posinit = posfinal;
+                vinit = vfinal;
+                acceleration = (((1 - Mathf.Sqrt(Mathf.Sqrt(tempTimer / jumpTime))) * initialJumpPower * jumpForce) - gravity)/ GetComponent<Rigidbody2D>().mass;
+                vfinal = vinit + (acceleration * Time.deltaTime);
+                posfinal = posinit + vinit * (Time.deltaTime) + ((acceleration / 2) * (Time.deltaTime) * (Time.deltaTime));
+                tempTimer += Time.deltaTime;
+            }
+            else
+            {
+                //The character position is determined from its feets
+                float characterPositionY = charPos.y - GetComponent<SpriteRenderer>().bounds.extents.y + .5f ;
+                //Freezes the indicator while jumping
+                if (grounded)
+                    if (posfinal < 0)
+                        maxHeight = characterPositionY;
+                    else
+                        maxHeight = characterPositionY + posfinal;
+                
+                Vector2 leftPoint = new Vector2(charPos.x - 1f, maxHeight);
+                Vector2 rightPoint = new Vector2(charPos.x + 1f, maxHeight);
+                //Drawing the line between the two calculated points
+                maxHeightIndicatorControl.setLineParameters(leftPoint, rightPoint);
+            }
+        }
+        else
+            Destroy(maxHeightIndicator);
+    }
+
 	void Flip ()
 	{
 		// Switch the way the player is labelled as facing.

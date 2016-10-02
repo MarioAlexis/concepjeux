@@ -62,6 +62,9 @@ public class Platformer2DUserControl : MonoBehaviour
         // Pass all the parameters for teleporting
         character.Teleport(character.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition), initTeleport, teleport);
 
+        // Pass the position to calculate le maximum height of a jump
+        character.drawMaxJumpHeight(character.transform.position);
+
         // Reset the jump input once it has been used.
 	    jump = false;
         initTeleport = false;
