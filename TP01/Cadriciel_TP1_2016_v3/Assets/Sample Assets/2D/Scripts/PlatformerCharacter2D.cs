@@ -61,6 +61,7 @@ public class PlatformerCharacter2D : MonoBehaviour
     private float tempTimer = 0;
     private float detectForceChange = 0;
     private float detectMassChange = 0;
+    private float detectJumpTimeChange = 0;
     [SerializeField]
     bool drawJumpIndicator = false;
     private float posinit = 0f;
@@ -280,8 +281,8 @@ public class PlatformerCharacter2D : MonoBehaviour
                 shadow.SetActive(!shadow_isOverLapping);
 
                 // Instantiate "laser beam" at the top and bottom of the character
-                lineTop = Instantiate(Resources.Load("LineREnderer", typeof(GameObject))) as GameObject;
-                lineBottom = Instantiate(Resources.Load("LineREnderer", typeof(GameObject))) as GameObject;
+                lineTop = Instantiate(Resources.Load("LineRenderer", typeof(GameObject))) as GameObject;
+                lineBottom = Instantiate(Resources.Load("LineRenderer", typeof(GameObject))) as GameObject;
                 lineControlTop = lineTop.GetComponent<LineRendererController>();
                 lineControlBottom = lineBottom.GetComponent<LineRendererController>();
             }
@@ -377,11 +378,13 @@ public class PlatformerCharacter2D : MonoBehaviour
         {
             if (maxHeightIndicator == null && maxHeightIndicatorControl == null)
             {
-                maxHeightIndicator = Instantiate(Resources.Load("LineREnderer", typeof(GameObject))) as GameObject;
+                maxHeightIndicator = Instantiate(Resources.Load("LineRenderer", typeof(GameObject))) as GameObject;
                 maxHeightIndicatorControl = maxHeightIndicator.GetComponent<LineRendererController>();
             }
-            //On relance le calcul si jumpForce a été modifié
-            if (detectForceChange != jumpForce || detectMassChange != GetComponent<Rigidbody2D>().mass)
+            //On relance le calcul si jumpForce, la masse ou jumpTime a été modifié
+            if (detectForceChange != jumpForce 
+                || detectMassChange != GetComponent<Rigidbody2D>().mass
+                || detectJumpTimeChange != jumpTime)
             {
                 tempTimer = 0;
                 acceleration = 0;
@@ -391,6 +394,7 @@ public class PlatformerCharacter2D : MonoBehaviour
                 vfinal = 0;
                 detectForceChange = jumpForce;
                 detectMassChange = GetComponent<Rigidbody2D>().mass;
+                detectJumpTimeChange = jumpTime;
             }
             //Calcul of the max height with the equations of motion
             if (tempTimer < jumpTime)
