@@ -81,7 +81,6 @@ public class PlatformerCharacter2D : MonoBehaviour
     private float vfinal = 0f;
     private float acceleration = 0f;
 
-    // JUMP VARIABLES
     float initialJumpPower = 0.15f;
     float powerJump;
     bool blockJump = false;
