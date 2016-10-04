@@ -167,7 +167,6 @@ public class PlatformerCharacter2D : MonoBehaviour
 
 		// Set whether or not the character is crouching in the animator
 		anim.SetBool("Crouch", crouch);
-        Debug.Log(isWallJumping);
         anim.SetBool("WallJump", isWallJumping);
 
         //only control the player if grounded
