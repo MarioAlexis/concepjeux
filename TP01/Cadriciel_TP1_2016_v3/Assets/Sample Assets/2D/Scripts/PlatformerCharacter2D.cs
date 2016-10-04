@@ -7,9 +7,15 @@ public class PlatformerCharacter2D : MonoBehaviour
 
 	[SerializeField] float maxSpeed = 10f;				// The fastest the player can travel in the x axis.
 	[SerializeField] float jumpForce = 400f;			// Amount of force added when the player jumps.
-    [SerializeField] float wallJumpForce = 400f;		// Amount of force added when the player jumps against walls.
     [SerializeField] float jumpTime = 1f;               // Duration of a jump
-    [SerializeField] bool verticalSpeedRestartAtJump=true;	// Is the vertical speed reset when we jump
+    [SerializeField] bool verticalSpeedRestartAtJump=true;  // Is the vertical speed reset when we jump
+
+    //WallJump
+    [SerializeField] float wallJumpForce = 400f;		// Amount of force added when the player jumps against walls.
+    private float timerWallJump = 0f;
+    private float wallJumpTime = .4f;
+    private float airControlBuffer = 0;
+    private bool isWallJumping = false;
 
     [Range(0, 1)]
 	[SerializeField] float crouchSpeed = .36f;			// Amount of maxSpeed applied to crouching movement. 1 = 100%
@@ -17,7 +23,8 @@ public class PlatformerCharacter2D : MonoBehaviour
     [Range(0, 1)]
     [SerializeField] float reductionConsecutiveJump = 1f;// Power reduction between 2 consecutive Jump. 1 = 100% = no reduction. 0 = big reduction.
 
-    [SerializeField] float airControl = 1;			    // Whether or not a player can steer while jumping;
+    [Range(0, 1)]
+    [SerializeField] float airControl = 1.0f;			    // Whether or not a player can steer while jumping;
     [SerializeField] float numberMaxOfConsecutivesJumps = 1;// Max Number Of Jump;
     [SerializeField] LayerMask whatIsGround;			// A mask determining what is ground to the character
 	
@@ -40,20 +47,41 @@ public class PlatformerCharacter2D : MonoBehaviour
     float currentNumberOfJump = 0;
     float timer = 0;                                    // timer in jump
 
+    //airControl variables
+    private float initJumpDirection = 0;
+    private bool hasChanged = false;
+
     //teleport variables
     private GameObject lineTop, lineBottom;
     private LineRendererController lineControlTop, lineControlBottom;
     private GameObject shadow;
-    private float charHeight;
+    private Vector2 shadow_topPoint, shadow_diagonalBottomPoint;
+    private float shadow_height, shadow_width;
+    private bool shadow_isOverLapping;
     private bool initTeleport = false;
     private float actualRadius = 0f;
-    private RaycastHit2D hitTop, hitMiddle, hitBottom;
-    private LayerMask ignoreHitMask;
     private ParticleSystem teleportarticleControl;
     private GameObject teleportEffect;
     private Image teleportLoadingBar;
     private bool isTeleportRdy = true;
 
+    //Jump indicator variables
+    private GameObject maxHeightIndicator;
+    private LineRendererController maxHeightIndicatorControl;
+    private float maxHeight = 0;
+    private float tempTimer = 0;
+    private float detectForceChange = 0;
+    private float detectMassChange = 0;
+    private float detectJumpTimeChange = 0;
+    [SerializeField]
+    bool drawJumpIndicator = false;
+    private float posinit = 0f;
+    private float posfinal = 0f;
+    private float vinit = 0f;
+    private float vfinal = 0f;
+    private float acceleration = 0f;
+
+    // JUMP VARIABLES
     float initialJumpPower = 0.15f;
     float powerJump;
     bool blockJump = false;
@@ -70,9 +98,6 @@ public class PlatformerCharacter2D : MonoBehaviour
         teleportLoadingBar = TeleportCooldownBar.GetComponent<Image>();
         teleportLoadingBar.fillAmount = 1.0f;
         isTeleportRdy = true;
-
-        // Getting layerMask to ingore in rayCastHit2D
-        ignoreHitMask =  (1 << (LayerMask.NameToLayer("Characters"))) |  (1 << (LayerMask.NameToLayer("Background")));
 	}
 
     bool inAir()
@@ -96,9 +121,12 @@ public class PlatformerCharacter2D : MonoBehaviour
 		// Set the vertical animation
 		anim.SetFloat("vSpeed", GetComponent<Rigidbody2D>().velocity.y);
 
+        // Destroy the teleport shockwave particles system if is not active
         if (teleportarticleControl != null)
             if (!teleportarticleControl.IsAlive())
                 Destroy(teleportEffect);
+
+        // if the teleport state is not ready. This mean we need to increase the teleport loading bar
         if (!isTeleportRdy)
         {
             float addFilledAmount = Time.deltaTime / cooldownTeleportSec;
@@ -130,10 +158,8 @@ public class PlatformerCharacter2D : MonoBehaviour
 
 	public void Move(float move, bool crouch, bool jump, bool jumpButtonPressed)
 	{
-
-
-		// If crouching, check to see if the character can stand up
-		if(!crouch && anim.GetBool("Crouch"))
+        // If crouching, check to see if the character can stand up
+        if (!crouch && anim.GetBool("Crouch"))
 		{
 			// If the character has a ceiling preventing them from standing up, keep them crouching
 			if( Physics2D.OverlapCircle(ceilingCheck.position, ceilingRadius, whatIsGround))
@@ -142,10 +168,13 @@ public class PlatformerCharacter2D : MonoBehaviour
 
 		// Set whether or not the character is crouching in the animator
 		anim.SetBool("Crouch", crouch);
+        Debug.Log(isWallJumping);
+        anim.SetBool("WallJump", isWallJumping);
 
-		//only control the player if grounded
-		if(grounded)
+        //only control the player if grounded
+        if (grounded)
 		{
+            hasChanged = false;
             currentNumberOfJump = 0;
             powerJump = initialJumpPower;
             if (numberMaxOfConsecutivesJumps == 0)
@@ -172,6 +201,9 @@ public class PlatformerCharacter2D : MonoBehaviour
 				Flip();
 		}
 
+        //used to know if user tries to air control
+        if (jump) initJumpDirection = Mathf.Sign(move);
+
         //only control the player if airControl is turned on
         else if (airControl>0 && inAir())
         {
@@ -179,8 +211,20 @@ public class PlatformerCharacter2D : MonoBehaviour
             // The Speed animator parameter is set to the absolute value of the horizontal input.
             anim.SetFloat("Speed", Mathf.Abs(move));
 
-            // Move the character
-            GetComponent<Rigidbody2D>().velocity = new Vector2(move * maxSpeed, GetComponent<Rigidbody2D>().velocity.y);
+            if (initJumpDirection != Mathf.Sign(move) && !hasChanged) hasChanged = true;
+
+            Vector2 velo = GetComponent<Rigidbody2D>().velocity;
+            velo += new Vector2(move * airControl * maxSpeed, 0f);
+            if (velo.x >= airControl * maxSpeed && hasChanged)
+                velo.x = airControl * maxSpeed;
+            else if (velo.x >= maxSpeed && !hasChanged)
+                velo.x = maxSpeed;
+            else if (velo.x <= -airControl * maxSpeed && hasChanged)
+                velo.x = -airControl * maxSpeed;
+            else if (velo.x <= -maxSpeed && !hasChanged)
+                velo.x = -maxSpeed;
+
+            GetComponent<Rigidbody2D>().velocity = velo;
 
             // If the input is moving the player right and the player is facing left...
             if (move > 0 && !facingRight)
@@ -192,19 +236,34 @@ public class PlatformerCharacter2D : MonoBehaviour
                 Flip();
         }
 
-        if (againstWall)
-        {
-            blockJump = true;
-        }
-
-        if (jump && canJump() && !againstWall)
+        if (jump && canJump())// && !againstWall)
         {
             InitializeJump();
         }
 
-        if (jump && againstWall)
+        if ((jump && inAir() && againstWall) || timerWallJump != 0f && timerWallJump < wallJumpTime)
         {
-            GetComponent<Rigidbody2D>().AddForce(new Vector2(wallJumpForce, 0f));
+            isWallJumping = true;
+            
+            if (airControlBuffer == 0)
+            {
+                GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+                if (facingRight)
+                    GetComponent<Rigidbody2D>().AddForce(new Vector2(-wallJumpForce, jumpForce));
+                else
+                    GetComponent<Rigidbody2D>().AddForce(new Vector2(wallJumpForce, jumpForce));
+                airControlBuffer = airControl;
+                airControl = 0;
+                Flip();
+            }
+            timerWallJump += Time.fixedDeltaTime;
+        }
+        else if (timerWallJump >= wallJumpTime)
+        {
+            timerWallJump = 0f;
+            airControl = airControlBuffer;
+            airControlBuffer = 0;
+            isWallJumping = false;
         }
 
         if (!jumpButtonPressed)
@@ -216,7 +275,7 @@ public class PlatformerCharacter2D : MonoBehaviour
                 blockJump = false;
         }
 
-        if (jumpButtonPressed && timer < jumpTime && !blockJump)
+        if (jumpButtonPressed && timer < jumpTime && !blockJump && !isWallJumping)
         {
             //Calculate how far through the jump we are as a percentage
             //apply the full jump force on the first frame, then apply less force
@@ -226,8 +285,6 @@ public class PlatformerCharacter2D : MonoBehaviour
             GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, proportionCompleted*jumpForce));
             timer += Time.deltaTime;
         }
-
-        Debug.Log("against wall : " + againstWall);
 
         if (!jumpButtonPressed)
             timer = 0;
@@ -244,49 +301,58 @@ public class PlatformerCharacter2D : MonoBehaviour
             // Getting the distance between character and mouse position
             actualRadius = Vector2.Distance(mousePos, charPos);
 
-            // Dont Instantiate the "shadow" if the middle Raycast is hitting with a collider
-            hitMiddle = Physics2D.Raycast(charPos, mousePos - charPos, actualRadius + 0.5f, ~ignoreHitMask);
-
-            if (lineTop == null && lineBottom == null  && hitMiddle.collider == null && actualRadius < maxTeleportRadius)
+            if (lineTop == null && lineBottom == null  && actualRadius < maxTeleportRadius)
             {
-                // Instantiate "laser beam" at the top and bottom of the character
-                lineTop = Instantiate(Resources.Load("LineREnderer", typeof(GameObject))) as GameObject;
-                lineBottom = Instantiate(Resources.Load("LineREnderer", typeof(GameObject))) as GameObject;
-                lineControlTop = lineTop.GetComponent<LineRendererController>();
-                lineControlBottom = lineBottom.GetComponent<LineRendererController>();
-
-                // Instantiate character "shadow" for teleport location
+                // Instantiate the shadow but in disable mode --> this will allow to get the size of the shadow
                 shadow = Instantiate(Resources.Load("TeleportShadow", typeof(GameObject)), mousePos, Quaternion.identity) as GameObject;
                 shadow.transform.localScale = this.transform.localScale;
+                shadow.SetActive(false);
+                
+                // Get the height and the wodth of the character shadow
+                shadow_height = shadow.GetComponent<SpriteRenderer>().bounds.extents.y;
+                shadow_width = shadow.GetComponent<SpriteRenderer>().bounds.extents.x;
+
+                // Get Vector of opposite diagonal point to make a rectagular shape
+                shadow_topPoint = new Vector2(mousePos.x - shadow_width, mousePos.y + shadow_height);
+                shadow_diagonalBottomPoint = new Vector2(mousePos.x + shadow_width, mousePos.y - shadow_height);
+
+                // Check if the shadow is over lapping with "what is ground layer"
+                shadow_isOverLapping = Physics2D.OverlapArea(shadow_topPoint, shadow_diagonalBottomPoint, whatIsGround);
+
+                shadow.SetActive(!shadow_isOverLapping);
+
+                // Instantiate "laser beam" at the top and bottom of the character
+                lineTop = Instantiate(Resources.Load("LineRenderer", typeof(GameObject))) as GameObject;
+                lineBottom = Instantiate(Resources.Load("LineRenderer", typeof(GameObject))) as GameObject;
+                lineControlTop = lineTop.GetComponent<LineRendererController>();
+                lineControlBottom = lineBottom.GetComponent<LineRendererController>();
             }
             else if(lineTop != null && lineBottom != null)
             {
                 if(actualRadius > maxTeleportRadius)
                 {
-                    Destroy(lineTop);
-                    Destroy(lineBottom);
-                    Destroy(shadow);
+                    shadow.SetActive(false);
+                    lineTop.SetActive(false);
+                    lineBottom.SetActive(false);
                 }
-                else if(shadow != null)
+                else if(shadow.activeSelf)
                 {
-                    Vector2 spriteBox = shadow.GetComponent<SpriteRenderer>().bounds.extents;
-                    charHeight = spriteBox.y;
-                    Vector2 topPoint = new Vector2(mousePos.x, mousePos.y + spriteBox.y);
-                    Vector2 bottomPoint = new Vector2(mousePos.x, mousePos.y - spriteBox.y);
+                    // Set back the visual effect of the red lines
+                    lineTop.SetActive(true);
+                    lineBottom.SetActive(true);
 
-                    float distTop = Vector2.Distance(charPos, topPoint);
-                    float distBottom = Vector2.Distance(charPos, bottomPoint);
+                    // Get point for the red line visual
+                    Vector2 topPoint = new Vector2(mousePos.x, mousePos.y + shadow_height);
+                    Vector2 bottomPoint = new Vector2(mousePos.x, mousePos.y - shadow_height);
 
-                    hitTop = Physics2D.Raycast(charPos, topPoint - charPos, distTop, ~ignoreHitMask);
-                    hitMiddle = Physics2D.Raycast(charPos, mousePos - charPos, actualRadius, ~ignoreHitMask);
-                    hitBottom = Physics2D.Raycast(charPos, bottomPoint - charPos, distBottom, ~ignoreHitMask);
+                    // Get Vector of opposite diagonal point to make a rectagular shape
+                    shadow_topPoint = new Vector2(mousePos.x - shadow_width, mousePos.y + shadow_height);
+                    shadow_diagonalBottomPoint = new Vector2(mousePos.x + shadow_width, mousePos.y - shadow_height);
 
-                    if(hitTop.collider != null  ||  hitMiddle.collider != null || hitBottom.collider != null)
-                    {
-                        Destroy(shadow);
-                        topPoint = (hitTop.collider != null ? hitTop.point : topPoint);
-                        bottomPoint = (hitBottom.collider != null ? hitBottom.point : bottomPoint);
-                    }
+                    // Check if the shadow is over lapping with "what is ground layer"
+                    shadow_isOverLapping = Physics2D.OverlapArea(shadow_topPoint, shadow_diagonalBottomPoint, whatIsGround);
+
+                    shadow.SetActive(!shadow_isOverLapping);
 
                     lineControlTop.setLineParameters(charPos, topPoint);
                     lineControlBottom.setLineParameters(charPos, bottomPoint);
@@ -294,28 +360,24 @@ public class PlatformerCharacter2D : MonoBehaviour
                     shadow.transform.localScale = this.transform.localScale;
                     shadow.transform.position = mousePos;
                 }
-                else if (shadow == null)
+                else if (!shadow.activeSelf)
                 {
-                    Vector2 topPoint = new Vector2(mousePos.x, mousePos.y + charHeight);
-                    Vector2 bottomPoint = new Vector2(mousePos.x, mousePos.y - charHeight);
+                    // Set back the visual effect of the red lines
+                    lineTop.SetActive(true);
+                    lineBottom.SetActive(true);
 
-                    float distTop = Vector2.Distance(charPos, topPoint);
-                    float distBottom = Vector2.Distance(charPos, bottomPoint);
+                    // Get point for the red line visual
+                    Vector2 topPoint = new Vector2(mousePos.x, mousePos.y + shadow_height);
+                    Vector2 bottomPoint = new Vector2(mousePos.x, mousePos.y - shadow_height);
 
-                    hitTop = Physics2D.Raycast(charPos, topPoint - charPos, distTop, ~ignoreHitMask);
-                    hitMiddle = Physics2D.Raycast(charPos, mousePos - charPos, actualRadius, ~ignoreHitMask);
-                    hitBottom = Physics2D.Raycast(charPos, bottomPoint - charPos, distBottom, ~ignoreHitMask);
+                    // Get Vector of opposite diagonal point to make a rectagular shape
+                    shadow_topPoint = new Vector2(mousePos.x - shadow_width, mousePos.y + shadow_height);
+                    shadow_diagonalBottomPoint = new Vector2(mousePos.x + shadow_width, mousePos.y - shadow_height);
 
-                    if (hitTop.collider == null  && hitMiddle.collider == null && hitBottom.collider == null)
-                    {
-                        shadow = Instantiate(Resources.Load("TeleportShadow", typeof(GameObject)), mousePos, Quaternion.identity) as GameObject;
-                        shadow.transform.localScale = this.transform.localScale;
-                    }
-                    else
-                    {
-                        topPoint = (hitTop.collider != null ? hitTop.point : topPoint);
-                        bottomPoint = (hitBottom.collider != null ? hitBottom.point : bottomPoint);
-                    }
+                    // Check if the shadow is over lapping with "what is ground layer"
+                    shadow_isOverLapping = Physics2D.OverlapArea(shadow_topPoint, shadow_diagonalBottomPoint, whatIsGround);
+
+                    shadow.SetActive(!shadow_isOverLapping);
 
                     lineControlTop.setLineParameters(charPos, topPoint);
                     lineControlBottom.setLineParameters(charPos, bottomPoint);
@@ -323,20 +385,23 @@ public class PlatformerCharacter2D : MonoBehaviour
                 }
             }
         }
+        // Player release the shift button
         else if (!initTP && !TP && initTeleport)
         {
-            if (lineTop != null && lineBottom != null && shadow != null)
+            if (shadow.activeSelf)
             {
                 Destroy(lineTop);
                 Destroy(lineBottom);
                 Destroy(shadow);
                 teleportEffect = Instantiate(Resources.Load("TeleportEffect", typeof(GameObject)), mousePos, Quaternion.identity) as GameObject;
                 teleportarticleControl = teleportEffect.GetComponent<ParticleSystem>();
+                Vector2 charVelocity = (keepSpeedOnTeleport ? this.GetComponent<Rigidbody2D>().velocity : new Vector2(0.0f, 0.0f));
                 this.transform.position = mousePos;
+                this.GetComponent<Rigidbody2D>().velocity = charVelocity;
                 TeleportCooldownBar.GetComponent<Image>().fillAmount = 0.0f;
                 isTeleportRdy = false;
             }
-            else if(shadow == null)
+            else if(!shadow.activeSelf)
             {
                 Destroy(lineTop);
                 Destroy(lineBottom);
@@ -347,7 +412,62 @@ public class PlatformerCharacter2D : MonoBehaviour
         }
     }
 
-	
+    public void drawMaxJumpHeight(Vector2 charPos)
+    {
+        float gravity = GetComponent<Rigidbody2D>().gravityScale * Physics2D.gravity.magnitude;
+        if (drawJumpIndicator)
+        {
+            if (maxHeightIndicator == null && maxHeightIndicatorControl == null)
+            {
+                maxHeightIndicator = Instantiate(Resources.Load("LineRenderer", typeof(GameObject))) as GameObject;
+                maxHeightIndicatorControl = maxHeightIndicator.GetComponent<LineRendererController>();
+            }
+            //On relance le calcul si jumpForce, la masse ou jumpTime a été modifié
+            if (detectForceChange != jumpForce 
+                || detectMassChange != GetComponent<Rigidbody2D>().mass
+                || detectJumpTimeChange != jumpTime)
+            {
+                tempTimer = 0;
+                acceleration = 0;
+                posinit = 0;
+                vinit = 0;
+                posfinal = 0;
+                vfinal = 0;
+                detectForceChange = jumpForce;
+                detectMassChange = GetComponent<Rigidbody2D>().mass;
+                detectJumpTimeChange = jumpTime;
+            }
+            //Calcul of the max height with the equations of motion
+            if (tempTimer < jumpTime)
+            {
+                posinit = posfinal;
+                vinit = vfinal;
+                acceleration = (((1 - Mathf.Sqrt(Mathf.Sqrt(tempTimer / jumpTime))) * initialJumpPower * jumpForce) - gravity)/ GetComponent<Rigidbody2D>().mass;
+                vfinal = vinit + (acceleration * Time.deltaTime);
+                posfinal = posinit + vinit * (Time.deltaTime) + ((acceleration / 2) * (Time.deltaTime) * (Time.deltaTime));
+                tempTimer += Time.deltaTime;
+            }
+            else
+            {
+                //The character position is determined from its feets
+                float characterPositionY = charPos.y - GetComponent<SpriteRenderer>().bounds.extents.y + .5f ;
+                //Freezes the indicator while jumping
+                if (grounded)
+                    if (posfinal < 0)
+                        maxHeight = characterPositionY;
+                    else
+                        maxHeight = characterPositionY + posfinal;
+                
+                Vector2 leftPoint = new Vector2(charPos.x - 1f, maxHeight);
+                Vector2 rightPoint = new Vector2(charPos.x + 1f, maxHeight);
+                //Drawing the line between the two calculated points
+                maxHeightIndicatorControl.setLineParameters(leftPoint, rightPoint);
+            }
+        }
+        else
+            Destroy(maxHeightIndicator);
+    }
+
 	void Flip ()
 	{
 		// Switch the way the player is labelled as facing.
@@ -358,4 +478,9 @@ public class PlatformerCharacter2D : MonoBehaviour
 		theScale.x *= -1;
 		transform.localScale = theScale;
 	}
+
+    public bool isGrounded()
+    {
+        return grounded;
+    }
 }
