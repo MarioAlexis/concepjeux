@@ -19,6 +19,9 @@ public class RaceManager : MonoBehaviour
 	[SerializeField]
 	private int _endCountdown;
 
+    public GUIText scoreText;
+    public int score;
+
 	// Use this for initialization
 	void Awake () 
 	{
@@ -28,6 +31,8 @@ public class RaceManager : MonoBehaviour
 	
 	void Start()
 	{
+        score = 0;
+        updateScore();
 		StartCoroutine(StartCountdown());
 	}
 
@@ -93,4 +98,15 @@ public class RaceManager : MonoBehaviour
 		}
 
 	}
+
+    public void updateScore()
+    {
+        scoreText.text = "score : " + score;
+    }
+
+    public void addScore (int newScore)
+    {
+        score += newScore;
+        updateScore();
+    }
 }
