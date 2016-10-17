@@ -8692,7 +8692,6 @@ MonoBehaviour:
   _timeToStart: 3
   _endCountdown: 5
   scoreText: {fileID: 120621508}
-  score: 0
 --- !u!114 &557694393
 MonoBehaviour:
   m_ObjectHideFlags: 0

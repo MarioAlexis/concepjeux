@@ -20,7 +20,8 @@ public class RaceManager : MonoBehaviour
 	private int _endCountdown;
 
     public GUIText scoreText;
-    public int score;
+
+    private int score;
 
 	// Use this for initialization
 	void Awake () 

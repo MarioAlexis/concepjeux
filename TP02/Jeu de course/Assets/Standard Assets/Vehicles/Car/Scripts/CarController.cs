@@ -55,10 +55,17 @@ namespace UnityStandardAssets.Vehicles.Car
         public float Revs { get; private set; }
         public float AccelInput { get; private set; }
 
+        // for scoring points
+        Transform jumpCheck;	// A position marking where to check if the car use a jump.
+        private bool carAtTheEndOfRamp = false;
+
         // Use this for initialization
         private void Start()
         {
             m_WheelMeshLocalRotations = new Quaternion[4];
+
+            jumpCheck = transform.Find("ScorePointPlane");
+
             for (int i = 0; i < 4; i++)
             {
                 m_WheelMeshLocalRotations[i] = m_WheelMeshes[i].transform.localRotation;
@@ -128,6 +135,7 @@ namespace UnityStandardAssets.Vehicles.Car
 
         public void Move(float steering, float accel, float footbrake, float handbrake)
         {
+
             for (int i = 0; i < 4; i++)
             {
                 Quaternion quat;
