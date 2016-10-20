@@ -22,10 +22,6 @@ public class ActivateTrigger : MonoBehaviour {
 	public GameObject source;
 	public int triggerCount = 1;///
 	public bool repeatTrigger = false;
-
-    public RaceManager raceManager;
-
-    public Collider playerOneBodyCollider;
 	
 	void DoActivateTrigger () {
 		triggerCount--;
@@ -64,9 +60,9 @@ public class ActivateTrigger : MonoBehaviour {
 		}
 	}
 
-	void OnTriggerEnter (Collider other) {
+	/*void OnTriggerEnter (Collider other) {
 		DoActivateTrigger ();
         if (other == playerOneBodyCollider)
             raceManager.addScore(10);
-	}
+	}*/
 }
