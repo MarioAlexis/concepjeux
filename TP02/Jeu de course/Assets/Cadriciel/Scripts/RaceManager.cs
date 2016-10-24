@@ -23,6 +23,10 @@ public class RaceManager : MonoBehaviour
 
     private int score;
 
+    public GUIText nextTurnSignal;
+
+    private string turnSignal;
+
 	// Use this for initialization
 	void Awake () 
 	{
@@ -33,8 +37,10 @@ public class RaceManager : MonoBehaviour
 	void Start()
 	{
         score = 0;
+        turnSignal = "Left";
         updateScore();
-		StartCoroutine(StartCountdown());
+        updateTurnSignal();
+        StartCoroutine(StartCountdown());
 	}
 
 	IEnumerator StartCountdown()
@@ -105,9 +111,21 @@ public class RaceManager : MonoBehaviour
         scoreText.text = "score : " + score;
     }
 
+    public void updateTurnSignal()
+    {
+        nextTurnSignal.text = "next turn : " + turnSignal;
+    }
+
     public void addScore (int newScore)
     {
         score += newScore;
         updateScore();
     }
+
+    public void changeTurnSignal (string newTurnSignal)
+    {
+        turnSignal = newTurnSignal;
+        updateTurnSignal();
+    }
+
 }

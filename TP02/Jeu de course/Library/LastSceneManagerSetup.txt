@@ -1,0 +1,4 @@
+sceneSetups:
+- path: Assets/Cadriciel/Scenes/course.unity
+  isLoaded: 1
+  isActive: 1
