@@ -37,6 +37,9 @@ namespace UnityStandardAssets.Vehicles.Car
         [SerializeField] private float m_SlipLimit;
         [SerializeField] private float m_BrakeTorque;
 
+        const float MPH_UNIT_SPEED = 2.23693629f;
+        const float KPH_UNIT_SPEED = 3.6f;
+
         private Quaternion[] m_WheelMeshLocalRotations;
         private Vector3 m_Prevpos, m_Pos;
         private float m_SteerAngle;
@@ -44,13 +47,15 @@ namespace UnityStandardAssets.Vehicles.Car
         private float m_GearFactor;
         private float m_OldRotation;
         private float m_CurrentTorque;
+        private float m_unitSpeed;
         private Rigidbody m_Rigidbody;
         private const float k_ReversingThreshold = 0.01f;
 
         public bool Skidding { get; private set; }
         public float BrakeInput { get; private set; }
         public float CurrentSteerAngle{ get { return m_SteerAngle; }}
-        public float CurrentSpeed{ get { return m_Rigidbody.velocity.magnitude*2.23693629f; }}
+        public float CurrentSpeed{ get { return m_Rigidbody.velocity.magnitude*m_unitSpeed; }}
+        public float CurrentUnitSpeed { get { return this.m_unitSpeed;  } }
         public float MaxSpeed{get { return m_Topspeed; }}
         public float Revs { get; private set; }
         public float AccelInput { get; private set; }
@@ -76,6 +81,7 @@ namespace UnityStandardAssets.Vehicles.Car
 
             m_Rigidbody = GetComponent<Rigidbody>();
             m_CurrentTorque = m_FullTorqueOverAllWheels - (m_TractionControl*m_FullTorqueOverAllWheels);
+            m_unitSpeed = (m_SpeedType == SpeedType.MPH ? MPH_UNIT_SPEED : KPH_UNIT_SPEED);
         }
 
 
@@ -187,13 +193,13 @@ namespace UnityStandardAssets.Vehicles.Car
             {
                 case SpeedType.MPH:
 
-                    speed *= 2.23693629f;
+                    speed *= MPH_UNIT_SPEED;
                     if (speed > m_Topspeed)
                         m_Rigidbody.velocity = (m_Topspeed/2.23693629f) * m_Rigidbody.velocity.normalized;
                     break;
 
                 case SpeedType.KPH:
-                    speed *= 3.6f;
+                    speed *= KPH_UNIT_SPEED;
                     if (speed > m_Topspeed)
                         m_Rigidbody.velocity = (m_Topspeed/3.6f) * m_Rigidbody.velocity.normalized;
                     break;
