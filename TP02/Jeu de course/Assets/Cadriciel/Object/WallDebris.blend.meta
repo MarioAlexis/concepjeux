@@ -1,0 +1,225 @@
+fileFormatVersion: 2
+guid: 5ae27adac2863f042828282b99d3f449
+timeCreated: 1477775342
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Plane_cell
+    100002: Plane_cell_001
+    100004: Plane_cell_002
+    100006: Plane_cell_005
+    100008: Plane_cell_008
+    100010: Plane_cell_009
+    100012: Plane_cell_010
+    100014: Plane_cell_011
+    100016: Plane_cell_014
+    100018: Plane_cell_015
+    100020: Plane_cell_016
+    100022: Plane_cell_017
+    100024: Plane_cell_018
+    100026: Plane_cell_023
+    100028: Plane_cell_024
+    100030: Plane_cell_026
+    100032: Plane_cell_028
+    100034: Plane_cell_029
+    100036: Plane_cell_030
+    100038: Plane_cell_031
+    100040: Plane_cell_032
+    100042: Plane_cell_033
+    100044: Plane_cell_034
+    100046: Plane_cell_035
+    100048: Plane_cell_036
+    100050: //RootNode
+    400000: Plane_cell
+    400002: Plane_cell_001
+    400004: Plane_cell_002
+    400006: Plane_cell_005
+    400008: Plane_cell_008
+    400010: Plane_cell_009
+    400012: Plane_cell_010
+    400014: Plane_cell_011
+    400016: Plane_cell_014
+    400018: Plane_cell_015
+    400020: Plane_cell_016
+    400022: Plane_cell_017
+    400024: Plane_cell_018
+    400026: Plane_cell_023
+    400028: Plane_cell_024
+    400030: Plane_cell_026
+    400032: Plane_cell_028
+    400034: Plane_cell_029
+    400036: Plane_cell_030
+    400038: Plane_cell_031
+    400040: Plane_cell_032
+    400042: Plane_cell_033
+    400044: Plane_cell_034
+    400046: Plane_cell_035
+    400048: Plane_cell_036
+    400050: //RootNode
+    2300000: Plane_cell
+    2300002: Plane_cell_001
+    2300004: Plane_cell_002
+    2300006: Plane_cell_005
+    2300008: Plane_cell_008
+    2300010: Plane_cell_009
+    2300012: Plane_cell_010
+    2300014: Plane_cell_011
+    2300016: Plane_cell_014
+    2300018: Plane_cell_015
+    2300020: Plane_cell_016
+    2300022: Plane_cell_017
+    2300024: Plane_cell_018
+    2300026: Plane_cell_023
+    2300028: Plane_cell_024
+    2300030: Plane_cell_026
+    2300032: Plane_cell_028
+    2300034: Plane_cell_029
+    2300036: Plane_cell_030
+    2300038: Plane_cell_031
+    2300040: Plane_cell_032
+    2300042: Plane_cell_033
+    2300044: Plane_cell_034
+    2300046: Plane_cell_035
+    2300048: Plane_cell_036
+    3300000: Plane_cell
+    3300002: Plane_cell_001
+    3300004: Plane_cell_002
+    3300006: Plane_cell_005
+    3300008: Plane_cell_008
+    3300010: Plane_cell_009
+    3300012: Plane_cell_010
+    3300014: Plane_cell_011
+    3300016: Plane_cell_014
+    3300018: Plane_cell_015
+    3300020: Plane_cell_016
+    3300022: Plane_cell_017
+    3300024: Plane_cell_018
+    3300026: Plane_cell_023
+    3300028: Plane_cell_024
+    3300030: Plane_cell_026
+    3300032: Plane_cell_028
+    3300034: Plane_cell_029
+    3300036: Plane_cell_030
+    3300038: Plane_cell_031
+    3300040: Plane_cell_032
+    3300042: Plane_cell_033
+    3300044: Plane_cell_034
+    3300046: Plane_cell_035
+    3300048: Plane_cell_036
+    4300000: Plane_cell_036
+    4300002: Plane_cell_035
+    4300004: Plane_cell_034
+    4300006: Plane_cell_033
+    4300008: Plane_cell_032
+    4300010: Plane_cell_031
+    4300012: Plane_cell_030
+    4300014: Plane_cell_029
+    4300016: Plane_cell_028
+    4300018: Plane_cell_026
+    4300020: Plane_cell_024
+    4300022: Plane_cell_023
+    4300024: Plane_cell_018
+    4300026: Plane_cell_017
+    4300028: Plane_cell_016
+    4300030: Plane_cell_015
+    4300032: Plane_cell_014
+    4300034: Plane_cell_011
+    4300036: Plane_cell_010
+    4300038: Plane_cell_009
+    4300040: Plane_cell_008
+    4300042: Plane_cell_005
+    4300044: Plane_cell_002
+    4300046: Plane_cell_001
+    4300048: Plane_cell
+    6400000: Plane_cell
+    6400002: Plane_cell_001
+    6400004: Plane_cell_002
+    6400006: Plane_cell_005
+    6400008: Plane_cell_008
+    6400010: Plane_cell_009
+    6400012: Plane_cell_010
+    6400014: Plane_cell_011
+    6400016: Plane_cell_014
+    6400018: Plane_cell_015
+    6400020: Plane_cell_016
+    6400022: Plane_cell_017
+    6400024: Plane_cell_018
+    6400026: Plane_cell_023
+    6400028: Plane_cell_024
+    6400030: Plane_cell_026
+    6400032: Plane_cell_028
+    6400034: Plane_cell_029
+    6400036: Plane_cell_030
+    6400038: Plane_cell_031
+    6400040: Plane_cell_032
+    6400042: Plane_cell_033
+    6400044: Plane_cell_034
+    6400046: Plane_cell_035
+    6400048: Plane_cell_036
+    7400000: Default Take
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 1
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
