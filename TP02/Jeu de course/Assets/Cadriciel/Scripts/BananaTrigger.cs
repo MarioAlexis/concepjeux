@@ -25,7 +25,6 @@ public class BananaTrigger : MonoBehaviour
     {
         if(!isSpin)
         {
-            Debug.Log(" " + SlowDownRatio + " " + RespawnDelaySec + " " + RespawnAfterTrigger);
             carTrans = car.transform.parent.transform.parent.gameObject.GetComponent<Transform>();
             carRigi = car.transform.parent.transform.parent.gameObject.GetComponent<Rigidbody>();
             velo = carRigi.velocity;
