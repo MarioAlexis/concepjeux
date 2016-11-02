@@ -45,13 +45,13 @@ public class brushScoring : MonoBehaviour {
     {
         if (other == playerOneBodyCollider)
         {
-            Debug.Log(timer);
+            //Debug.Log(timer);
             timer += (Time.deltaTime)*1000;
             if(timer > timeNeededBeforeStartingToScorePoints && timer-lastTimeScored> intervalBetween2PointScored)
             {
                 lastTimeScored = timer;
                 raceManager.addScore(numberOfPointsToAdd);
-                Debug.Log(timer);
+                //Debug.Log(timer);
             }
         }
     }

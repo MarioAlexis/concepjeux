@@ -11,10 +11,16 @@ public class WallDestruction : MonoBehaviour
 	
 	}
 
-    void OnTriggerEnter(Collider projectile)
+    void OnCollisionEnter(Collision projectile)
     {
-        Instantiate(DebrisPrefab, this.transform.position, this.transform.rotation);
-        Destroy(this.gameObject);
+        Debug.Log(projectile.gameObject.name);
+        if(projectile.gameObject.name == "greenshell")
+        {
+            GameObject tmpwall = Instantiate(DebrisPrefab, this.transform.position, this.transform.rotation) as GameObject;
+            tmpwall.transform.localScale = this.transform.localScale;
+            Destroy(this.gameObject);
+        }
+
     }
 	
 	// Update is called once per frame
