@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GreenShellManager : MonoBehaviour
+public class RedShellManager : MonoBehaviour
 {
     // PRIVATE GLOBAL VARIABLES
     private Rigidbody shellRigi;
@@ -9,17 +9,17 @@ public class GreenShellManager : MonoBehaviour
     private float constantSpeed = 50f;
     private Quaternion constRot;
     private float constHigh = 1f;
+    private GameObject target;
+    private float deltaTime = 0.0f;
 
     //SPIN VARIABLES
     private Transform carTrans;
     private Rigidbody carRigi;
     private bool isSpin = false;
-    private bool isAfterSpin = false;
     private float spinTour = 0;
     private float accDeg = 0;
     private float angleRot = 7f;
     private float currentangle;
-    private float accDelay = 0.0f;
     private Vector3 velo;
     private float SlowDownRatio = 0.5f;
 
@@ -33,11 +33,23 @@ public class GreenShellManager : MonoBehaviour
         constRot = this.transform.rotation;
         constHigh = this.transform.position.y;
         shellRigi.AddRelativeForce(new Vector3(0.0f, 0.0f, 300.0f), ForceMode.Acceleration);
+
+        target = FindClosestEnemy();
     }
 
     void FixedUpdate()
     {
-        shellRigi.velocity = constantSpeed * (shellRigi.velocity.normalized);
+        if (target != null && deltaTime > .2f)
+        {
+            shellRigi.velocity = (target.transform.position - transform.position).normalized * constantSpeed;
+        }
+        else
+        {
+            shellRigi.velocity = constantSpeed * (shellRigi.velocity.normalized);
+            target = FindClosestEnemy();
+            deltaTime += Time.fixedDeltaTime;
+        }
+
     }
     // Update is called once per frame
     void Update()
@@ -46,7 +58,6 @@ public class GreenShellManager : MonoBehaviour
         newPos.y = constHigh;
         this.transform.position = newPos;
         this.transform.rotation = constRot;
-
 
         // SPIN UPDATE
         if (isSpin && (accDeg < (360 * spinTour)))
@@ -70,10 +81,30 @@ public class GreenShellManager : MonoBehaviour
         }
     }
 
-    void checkState()
+    //Script adapted from unity's exemples : https://docs.unity3d.com/ScriptReference/GameObject.FindGameObjectsWithTag.html
+    GameObject FindClosestEnemy()
     {
-        if (nbBounce == 0) Destroy(this.gameObject);
-        else nbBounce--;
+        GameObject[] gos;
+        gos = GameObject.FindGameObjectsWithTag("Player");
+        GameObject findClosest = null;
+        float distance = Mathf.Infinity;
+        Vector3 position = transform.position;
+        foreach (GameObject go in gos)
+        {
+            Vector3 diff = go.transform.position - position;
+            if (Vector3.Dot(shellRigi.transform.TransformDirection(Vector3.forward), diff) > 0)
+            {
+                float curDistance = diff.sqrMagnitude;
+
+                if (curDistance < distance && curDistance > 16.5f && curDistance < 1000f)
+                {
+                    Debug.Log(curDistance);
+                    findClosest = go;
+                    distance = curDistance;
+                }
+            }
+        }
+        return findClosest;
     }
 
     void OnCollisionEnter(Collision col)
@@ -85,15 +116,15 @@ public class GreenShellManager : MonoBehaviour
             this.transform.position = new Vector3(this.transform.position.x, 3.0f, this.transform.position.z);
             constHigh = -3.0f;
 
-            // MAKE PLAYER SPIN WHEN HIT WITH THE GREEN SHELL
+            // MAKE PLAYER SPIN WHEN HIT WITH THE SHELL
             makePlayerSpin(col.gameObject);
         }
-        if (col.gameObject.tag == "wall") checkState();
+        if (col.gameObject.tag == "wall") Destroy(gameObject);
     }
 
     void makePlayerSpin(GameObject car)
     {
-        if (!isSpin)
+        if (!isSpin && car.gameObject.tag == "Player")
         {
             carTrans = car.GetComponent<Transform>();
             carRigi = car.GetComponent<Rigidbody>();
