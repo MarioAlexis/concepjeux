@@ -5,33 +5,22 @@ public class shellSpawn : MonoBehaviour {
 
 
     [SerializeField]
-    GameObject missile;
-    private float constantSpeed = 30f;
+    Object greenMissile;
+    [SerializeField]
+    Object redMissile;
     private GameObject missileManager;
-    // Use this for initialization
-    void Start()
-    {
-       // greenMissile = UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Cadriciel/Prefabs/greenShell.prefab", typeof(GameObject));
-    }
+    
 
     // Update is called once per frame
     void Update()
     {
-
         if (Input.GetMouseButtonDown(0))
         {
-            missileManager = Instantiate(missile, this.transform.position, this.transform.rotation) as GameObject;
-            //missileManager.GetComponent<Rigidbody>().velocity = transform.forward.normalized * constantSpeed;
-
-            /*greenMissileClone = Instantiate(greenMissile) as GameObject;
-            greenMissileClone.transform.localScale.Set(.1f, .1f, .1f);
-            greenMissileClone.transform.position = transform.position + transform.forward;
-            greenMissileClone.GetComponent<Rigidbody>().velocity = transform.forward.normalized * constantSpeed;*/
-            //30 => changer valeur de la vitesse
+            missileManager = Instantiate(greenMissile, transform.position, transform.rotation) as GameObject;
         }
-       /* if (missileManager != null)
+        if (Input.GetMouseButtonDown(1))
         {
-            missileManager.GetComponent<Rigidbody>().velocity = constantSpeed * (missileManager.GetComponent<Rigidbody>().velocity.normalized);
-        }*/
+            missileManager = Instantiate(redMissile, transform.position, transform.rotation) as GameObject;
+        }
     }
 }

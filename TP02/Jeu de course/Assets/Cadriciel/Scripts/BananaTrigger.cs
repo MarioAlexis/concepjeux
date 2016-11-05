@@ -23,7 +23,8 @@ public class BananaTrigger : MonoBehaviour
     private Vector3 bananaInitPos;
     void OnTriggerEnter(Collider car)
     {
-        if(!isSpin)
+        Debug.Log(car.gameObject.tag);
+        if(!isSpin && !(car.gameObject.tag == "shell"))
         {
             carTrans = car.transform.parent.transform.parent.gameObject.GetComponent<Transform>();
             carRigi = car.transform.parent.transform.parent.gameObject.GetComponent<Rigidbody>();
