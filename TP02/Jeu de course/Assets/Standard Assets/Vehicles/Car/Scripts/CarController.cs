@@ -1,5 +1,7 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
 
 namespace UnityStandardAssets.Vehicles.Car
 {
@@ -62,11 +64,18 @@ namespace UnityStandardAssets.Vehicles.Car
 
         // for scoring points
         Transform jumpCheck;	// A position marking where to check if the car use a jump.
-        private bool carAtTheEndOfRamp = false;
+
+        private NitroScript nitro;
+
+        public int nitroBoost = 20000;
+
+        public Scrollbar nitroBar;
 
         // Use this for initialization
         private void Start()
         {
+            nitro = new NitroScript();
+
             m_WheelMeshLocalRotations = new Quaternion[4];
 
             jumpCheck = transform.Find("ScorePointPlane");
@@ -139,7 +148,7 @@ namespace UnityStandardAssets.Vehicles.Car
         }
 
 
-        public void Move(float steering, float accel, float footbrake, float handbrake)
+        public void Move(float steering, float accel, float footbrake, float handbrake, float nitroOn)
         {
 
             for (int i = 0; i < 4; i++)
@@ -156,6 +165,14 @@ namespace UnityStandardAssets.Vehicles.Car
             AccelInput = accel = Mathf.Clamp(accel, 0, 1);
             BrakeInput = footbrake = -1*Mathf.Clamp(footbrake, -1, 0);
             handbrake = Mathf.Clamp(handbrake, 0, 1);
+
+            if (nitroOn > 0 && nitro.nitroQuantity() > 0)
+            {
+                Debug.Log("NITRO quantity : "+ nitro.nitroQuantity());
+                nitro.removeSomeNitro(1);
+                m_Rigidbody.AddRelativeForce(new Vector3(0f,0f, nitroBoost));
+                nitroBar.size = nitro.getRatio();
+            }
 
             //Set the steer on the front wheels.
             //Assuming that wheels 0 and 1 are the front wheels.
@@ -378,4 +395,52 @@ namespace UnityStandardAssets.Vehicles.Car
             return false;
         }
     }
+
+
+
+
+
+    public class NitroScript 
+    {
+
+        private float quantityOfNitroLeft;
+
+        public float quantityMaxOfNitro = 100f;
+
+        // Use this for initialization
+        public NitroScript()
+        {
+            quantityOfNitroLeft = quantityMaxOfNitro;
+        }
+        
+        public float nitroQuantity()
+        {
+            return quantityOfNitroLeft;
+        }
+
+        public void addSomeNitro(int quantityToAdd)
+        {
+            quantityOfNitroLeft += quantityOfNitroLeft;
+            if (quantityOfNitroLeft > quantityMaxOfNitro)
+            {
+                quantityOfNitroLeft = quantityMaxOfNitro;
+            }
+        }
+
+        public void removeSomeNitro(int quantityToRemove)
+        {
+            quantityOfNitroLeft -= quantityToRemove;
+            if (quantityOfNitroLeft < 0)
+            {
+                quantityOfNitroLeft = 0;
+            }
+        }
+
+        public float getRatio()
+        {
+            return (quantityOfNitroLeft / quantityMaxOfNitro);
+        }
+    }
+
+
 }
