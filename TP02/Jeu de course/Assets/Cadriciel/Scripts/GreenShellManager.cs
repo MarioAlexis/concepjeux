@@ -8,6 +8,8 @@ public class GreenShellManager : MonoBehaviour
     private float constantSpeed = 50f;
     private Quaternion constRot;
     private float constHigh = 1f;
+    [SerializeField]
+    public float nbBounce = 1;
     // Use this for initialization
     void Start ()
     {
@@ -40,4 +42,22 @@ public class GreenShellManager : MonoBehaviour
         this.transform.rotation = constRot;
 
     }
+
+    void checkState()
+    {
+        if (nbBounce == 0) Destroy(gameObject);
+        else nbBounce--;
+    }
+
+    void OnCollisionEnter(Collision col)
+    {
+        Debug.Log(col.gameObject.tag);
+        if (col.gameObject.tag == "Player")
+        {
+            Debug.Log("Shell destroyed");
+            Destroy(gameObject);
+        }
+        if (col.gameObject.tag == "wall") checkState();
+    }
+
 }
