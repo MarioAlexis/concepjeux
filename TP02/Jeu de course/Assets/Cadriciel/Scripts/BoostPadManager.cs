@@ -48,6 +48,8 @@ public class BoostPadManager : MonoBehaviour
             carRigi.velocity = Vector3.zero;
             carRigi.AddRelativeForce(new Vector3(xVelo, 0.0f, zVelo), ForceMode.VelocityChange);
             carRigi.AddRelativeForce(new Vector3(xForce, 0.0f, zForce), ForceMode.Acceleration);
+
+            carTrans.FindChild("BoostFlame").gameObject.GetComponent<StartBoostFlame>().startBoostEffect();
         }
 
     }
