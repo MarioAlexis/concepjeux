@@ -34,38 +34,23 @@ public class BoostPadManager : MonoBehaviour
             float angmax = anglemid - 90;
             angmax = (angmax < 0 ? 360 - Mathf.Abs(angmax) : angmax);
             diffAngle = boostAngle - carAngle;
-            Debug.Log("boost angle : " + boostAngle + " car angle : " + carAngle + " Diff angle : " + diffAngle);
-            Debug.Log("  "+ angmin + "  "+ angmax);
 
             //VELOCITY
             carVeloMagni = carRigi.velocity.magnitude;
             xVelo = carVeloMagni * (Mathf.Sin(diffAngle * Mathf.Deg2Rad) /** Mathf.Rad2Deg*/);
             zVelo = carVeloMagni * (Mathf.Cos(diffAngle * Mathf.Deg2Rad) /** Mathf.Rad2Deg*/);
-           // if (!((carAngle > angmin) && (carAngle < angmax)))
-               // zVelo = zVelo * -1;
-            Debug.Log("VELO : " + carRigi.velocity + "MAGNI : " + carVeloMagni + " velo x : " + xVelo + " velo z : " + zVelo);
 
             //ACCELERATION
             xForce = AddAcceleration * (Mathf.Sin(diffAngle * Mathf.Deg2Rad)/* * Mathf.Rad2Deg*/);
             zForce = AddAcceleration * (Mathf.Cos(diffAngle * Mathf.Deg2Rad) /** Mathf.Rad2Deg*/);
-            //if (!((carAngle > angmin) && (carAngle < angmax)))
-               // zForce = zForce * -1;
-            Debug.Log(" force x : " + xForce + " force z : " + zForce);
-
 
             //ADD ACCELERATION & VELOCITY
             carRigi.velocity = Vector3.zero;
             carRigi.AddRelativeForce(new Vector3(xVelo, 0.0f, zVelo), ForceMode.VelocityChange);
-            //carRigi.velocity = new Vector3(xVelo, 0.0f, 1);
-            //carRigi.velocity += carTrans.forward * zVelo;
             carRigi.AddRelativeForce(new Vector3(xForce, 0.0f, zForce), ForceMode.Acceleration);
+
+            carTrans.FindChild("BoostFlame").gameObject.GetComponent<StartBoostFlame>().startBoostEffect();
         }
 
     }
-
-    // Update is called once per frame
-    void Update ()
-    {
-	
-	}
 }
