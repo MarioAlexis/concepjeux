@@ -11,9 +11,9 @@ public class WallDestruction : MonoBehaviour
 	
 	}
 
-    void OnTriggerEnter(Collider projectile)
+    void OnCollisionEnter(Collision projectile)
     {
-        if(projectile.gameObject.tag == "greenshell")
+        if(projectile.gameObject.tag == "shell")
         {
             Destroy(this.gameObject);
             GameObject tmpwall = Instantiate(DebrisPrefab, this.transform.position, this.transform.rotation) as GameObject;
