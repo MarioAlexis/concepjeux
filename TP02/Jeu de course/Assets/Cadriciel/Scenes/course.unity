@@ -228,7 +228,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   raceManager: {fileID: 557694392}
-  playerOneBodyCollider: {fileID: 0}
+  playerOneBodyCollider: {fileID: 996115545}
   numberOfPointsToAddOnJUmp: 10
 --- !u!1 &4637035
 GameObject:
@@ -425,7 +425,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   raceManager: {fileID: 557694392}
-  playerOneBodyCollider: {fileID: 0}
+  playerOneBodyCollider: {fileID: 996115545}
 --- !u!23 &33281603
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1623,7 +1623,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   raceManager: {fileID: 557694392}
-  playerOneBodyCollider: {fileID: 0}
+  playerOneBodyCollider: {fileID: 996115545}
 --- !u!23 &528608102
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2546,7 +2546,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   raceManager: {fileID: 557694392}
-  playerOneBodyCollider: {fileID: 0}
+  playerOneBodyCollider: {fileID: 996115545}
 --- !u!23 &755810930
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2639,7 +2639,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   raceManager: {fileID: 557694392}
-  playerOneBodyCollider: {fileID: 0}
+  playerOneBodyCollider: {fileID: 996115545}
 --- !u!23 &778470783
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3878,6 +3878,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 76d89ae3180ce424ba0da8fc43e02035, type: 2}
   m_IsPrefabParent: 0
+--- !u!65 &996115545 stripped
+BoxCollider:
+  m_PrefabParentObject: {fileID: 65000013515533460, guid: 6543adbe546bdff4aa12cc6afbc023dc,
+    type: 2}
+  m_PrefabInternal: {fileID: 398221261}
 --- !u!1 &1007523762
 GameObject:
   m_ObjectHideFlags: 0
@@ -4181,7 +4186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   raceManager: {fileID: 557694392}
-  playerOneBodyCollider: {fileID: 0}
+  playerOneBodyCollider: {fileID: 996115545}
 --- !u!23 &1114835211
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4605,7 +4610,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   raceManager: {fileID: 557694392}
-  playerOneBodyCollider: {fileID: 0}
+  playerOneBodyCollider: {fileID: 996115545}
 --- !u!23 &1245047114
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5454,7 +5459,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   raceManager: {fileID: 557694392}
-  playerOneBodyCollider: {fileID: 0}
+  playerOneBodyCollider: {fileID: 996115545}
 --- !u!23 &1465541476
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5873,7 +5878,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   raceManager: {fileID: 557694392}
-  playerOneBodyCollider: {fileID: 0}
+  playerOneBodyCollider: {fileID: 996115545}
 --- !u!23 &1550343243
 MeshRenderer:
   m_ObjectHideFlags: 0
