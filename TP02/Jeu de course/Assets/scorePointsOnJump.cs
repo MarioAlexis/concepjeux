@@ -25,7 +25,6 @@ public class scorePointsOnJump : MonoBehaviour {
         // DoActivateTrigger();
         if (other == playerOneBodyCollider)
         {
-            Debug.Log("Jump !");
             raceManager.addScore(numberOfPointsToAddOnJUmp);
         }
     }

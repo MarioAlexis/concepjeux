@@ -98,7 +98,6 @@ public class RedShellManager : MonoBehaviour
 
                 if (curDistance < distance && curDistance > 16.5f && curDistance < 1000f)
                 {
-                    Debug.Log(curDistance);
                     findClosest = go;
                     distance = curDistance;
                 }
