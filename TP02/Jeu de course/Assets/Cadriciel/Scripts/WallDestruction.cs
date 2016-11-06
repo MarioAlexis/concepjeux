@@ -11,7 +11,7 @@ public class WallDestruction : MonoBehaviour
 	
 	}
 
-    void OnCollisionEnter(Collision projectile)
+    void OnTriggerEnter(Collider projectile)
     {
         if(projectile.gameObject.tag == "greenshell")
         {
