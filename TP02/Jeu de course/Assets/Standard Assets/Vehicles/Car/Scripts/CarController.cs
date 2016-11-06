@@ -450,6 +450,3 @@ namespace UnityStandardAssets.Vehicles.Car
             return (quantityOfNitroLeft / quantityMaxOfNitro);
         }
     }
-
-
-}
