@@ -382,7 +382,6 @@ namespace UnityStandardAssets.Vehicles.Car
             }
         }
 
-
         private bool AnySkidSoundPlaying()
         {
             for (int i = 0; i < 4; i++)
@@ -394,8 +393,18 @@ namespace UnityStandardAssets.Vehicles.Car
             }
             return false;
         }
+
+
+
+        public void addNitro(float nitroQuantity)
+        {
+            nitro.addSomeNitro(nitroQuantity);
+            nitroBar.size = nitro.getRatio();
+        }
     }
 
+
+    }
 
 
 
@@ -418,9 +427,9 @@ namespace UnityStandardAssets.Vehicles.Car
             return quantityOfNitroLeft;
         }
 
-        public void addSomeNitro(int quantityToAdd)
+        public void addSomeNitro(float quantityToAdd)
         {
-            quantityOfNitroLeft += quantityOfNitroLeft;
+            quantityOfNitroLeft += quantityToAdd;
             if (quantityOfNitroLeft > quantityMaxOfNitro)
             {
                 quantityOfNitroLeft = quantityMaxOfNitro;

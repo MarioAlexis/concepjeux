@@ -123,7 +123,7 @@ public class RedShellManager : MonoBehaviour
 
     void makePlayerSpin(GameObject car)
     {
-        if (!isSpin && car.gameObject.tag == "Player")
+        if (!isSpin)
         {
             carTrans = car.GetComponent<Transform>();
             carRigi = car.GetComponent<Rigidbody>();

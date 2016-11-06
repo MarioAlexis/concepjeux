@@ -50,6 +50,7 @@ public class CheckpointManager : MonoBehaviour
 					if (IsPlayer(car))
 					{
 						GetComponent<RaceManager>().Announce("Tour " + (carData.lap+1).ToString());
+                        car.addNitro(50f);
 					}
 
 					if (carData.lap >= _totalLaps)
