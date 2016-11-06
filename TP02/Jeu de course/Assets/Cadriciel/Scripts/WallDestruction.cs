@@ -13,12 +13,11 @@ public class WallDestruction : MonoBehaviour
 
     void OnCollisionEnter(Collision projectile)
     {
-        Debug.Log(projectile.gameObject.tag);
         if(projectile.gameObject.tag == "greenshell")
         {
+            Destroy(this.gameObject);
             GameObject tmpwall = Instantiate(DebrisPrefab, this.transform.position, this.transform.rotation) as GameObject;
             tmpwall.transform.localScale = this.transform.localScale;
-            Destroy(this.gameObject);
         }
 
     }
