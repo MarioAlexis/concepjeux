@@ -33,6 +33,7 @@ public class RespawnPlayerZone : MonoBehaviour
                 carTrans.FindChild("FireTrigger").GetComponent<shellSpawn>().enabled = false;
                 isPlayer = true;
                 isAI = false;
+                StartCoroutine(StartCountdown(carTrans, carTrans.position));
             }
             else if(carTrans.gameObject.GetComponent<UnityStandardAssets.Vehicles.Car.CarAIControl>() != null)
             {
@@ -40,9 +41,6 @@ public class RespawnPlayerZone : MonoBehaviour
                 isPlayer = false;
                 isAI = true;
             }
-
-            StartCoroutine(StartCountdown(carTrans, carTrans.position));
-
         }
     }
 
