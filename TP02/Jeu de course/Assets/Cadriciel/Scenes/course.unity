@@ -1576,6 +1576,11 @@ Prefab:
       propertyPath: jumpForce
       value: 400000
       objectReference: {fileID: 0}
+    - target: {fileID: 114000012141680042, guid: 6543adbe546bdff4aa12cc6afbc023dc,
+        type: 2}
+      propertyPath: rubberBandingFactor
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6543adbe546bdff4aa12cc6afbc023dc, type: 2}
   m_IsPrefabParent: 0

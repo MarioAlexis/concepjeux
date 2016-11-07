@@ -41,7 +41,7 @@ public class Checkpoint : MonoBehaviour
                 other.transform.parent.transform.parent.gameObject.SendMessage("rubberBandingOn");
             }
             if (count >= 8) count = 0;
-            Debug.Log(count);
+            //Debug.Log(count);
         }   
     }
 }

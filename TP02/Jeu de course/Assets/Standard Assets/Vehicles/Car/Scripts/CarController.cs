@@ -77,6 +77,11 @@ namespace UnityStandardAssets.Vehicles.Car
 
         public Scrollbar nitroBar;
 
+        // for rubberbanding
+        private bool isRubberBandingAvailable;
+        [SerializeField]
+        private float rubberBandingFactor = 1.1f;
+
         // Use this for initialization
         private void Start()
         {
@@ -168,6 +173,10 @@ namespace UnityStandardAssets.Vehicles.Car
 
             //clamp input values
             steering = Mathf.Clamp(steering, -1, 1);
+            if (isRubberBandingAvailable)
+            {
+                accel = accel * rubberBandingFactor;
+            }
             AccelInput = accel = Mathf.Clamp(accel, 0, 1);
             BrakeInput = footbrake = -1*Mathf.Clamp(footbrake, -1, 0);
             handbrake = Mathf.Clamp(handbrake, 0, 1);
@@ -417,6 +426,16 @@ namespace UnityStandardAssets.Vehicles.Car
         {
             nitro.addSomeNitro(nitroQuantity);
             nitroBar.size = nitro.getRatio();
+        }
+
+        public void rubberBandingOff()
+        {
+            isRubberBandingAvailable = false;
+        }
+
+        public void rubberBandingOn()
+        {
+            isRubberBandingAvailable = true;
         }
 
         private bool IsGrounded()
