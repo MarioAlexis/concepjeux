@@ -24,11 +24,19 @@ namespace UnityStandardAssets.Vehicles.Car
             float h = CrossPlatformInputManager.GetAxis("Horizontal");
             float v = CrossPlatformInputManager.GetAxis("Vertical");
 #if !MOBILE_INPUT
-            float handbrake = CrossPlatformInputManager.GetAxis("Jump");
+            float handbrake = CrossPlatformInputManager.GetAxis("Handbrake");
             float nitro = CrossPlatformInputManager.GetAxis("Nitro");
-            m_Car.Move(h, v, v, handbrake,nitro);
+            bool jumpPressed = CrossPlatformInputManager.GetButton("Jump");
+
+            float BarrelRotate = CrossPlatformInputManager.GetAxis("BarrelRotate");
+            float frontRearRotate = CrossPlatformInputManager.GetAxis("FrontRearRotate");
+
+            m_Car.Move(h, v, v, handbrake,nitro, jumpPressed);
+
+            m_Car.AirDirection(h, BarrelRotate, frontRearRotate);
+
 #else
-            m_Car.Move(h, v, v, 0f);
+            m_Car.Move(h, v, v, 0f, 0f, false);
 #endif
         }
     }

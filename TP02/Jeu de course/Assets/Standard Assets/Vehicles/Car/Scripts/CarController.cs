@@ -39,6 +39,12 @@ namespace UnityStandardAssets.Vehicles.Car
         [SerializeField] private float m_SlipLimit;
         [SerializeField] private float m_BrakeTorque;
 
+        // jump-related variables
+        [SerializeField] private float jumpForce = 400000f;
+        [SerializeField] private float jumpTime = 1f;
+        private float jumpTimer = 0f;
+        private float distanceToGround = 0f;
+
         const float MPH_UNIT_SPEED = 2.23693629f;
         const float KPH_UNIT_SPEED = 3.6f;
 
@@ -148,7 +154,7 @@ namespace UnityStandardAssets.Vehicles.Car
         }
 
 
-        public void Move(float steering, float accel, float footbrake, float handbrake, float nitroOn)
+        public void Move(float steering, float accel, float footbrake, float handbrake, float nitroOn, bool jumpPressed)
         {
 
             for (int i = 0; i < 4; i++)
@@ -193,6 +199,17 @@ namespace UnityStandardAssets.Vehicles.Car
                 m_WheelColliders[3].brakeTorque = hbTorque;
             }
 
+            //Jump if possible
+            if (jumpTimer < jumpTime && jumpPressed)
+            {
+                float proportionCompleted = (1 - Mathf.Sqrt(Mathf.Sqrt(jumpTimer / jumpTime))) * 0.15f;
+                m_Rigidbody.AddForce(new Vector3(0f, proportionCompleted * jumpForce, 0f));
+                jumpTimer += Time.deltaTime;
+            }
+            else if (IsGrounded())
+            {
+                jumpTimer = 0;
+            }
 
             CalculateRevs();
             GearChanging();
@@ -401,7 +418,45 @@ namespace UnityStandardAssets.Vehicles.Car
             nitro.addSomeNitro(nitroQuantity);
             nitroBar.size = nitro.getRatio();
         }
+
+        private bool IsGrounded()
+        {
+            return Physics.Raycast(transform.position, -Vector3.up, distanceToGround + 0.1f);
+        }
+
+        public void AirDirection(float steering, float barrelRotate, float frontRearRotate )
+        {
+            if (!IsGrounded())
+            {
+                if (steering < 0)
+                {
+                    m_Rigidbody.transform.Rotate(Vector3.up, steering);
+                }
+                else if (steering > 0)
+                {
+                    m_Rigidbody.transform.Rotate(Vector3.up, steering);
+                }
+
+                if (frontRearRotate < 0)
+                {
+                    m_Rigidbody.transform.Rotate(Vector3.right, frontRearRotate);
+                }
+                else if (frontRearRotate > 0)
+                {
+                    m_Rigidbody.transform.Rotate(Vector3.right, frontRearRotate);
+                }
+                if (barrelRotate < 0)
+                {
+                    m_Rigidbody.transform.Rotate(Vector3.forward, -barrelRotate);
+                }
+                if (barrelRotate > 0)
+                {
+                    m_Rigidbody.transform.Rotate(Vector3.forward, -barrelRotate);
+                }
+            }
+        }
     }
+
 
 
     }
