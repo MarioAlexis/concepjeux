@@ -71,6 +71,11 @@ namespace UnityStandardAssets.Vehicles.Car
 
         public Scrollbar nitroBar;
 
+        //for rubberbanding
+        private bool rubberBandingAvailable;
+        [SerializeField]
+        private float rubberBandingFactor = 1.1f;
+
         // Use this for initialization
         private void Start()
         {
@@ -93,6 +98,13 @@ namespace UnityStandardAssets.Vehicles.Car
             m_unitSpeed = (m_SpeedType == SpeedType.MPH ? MPH_UNIT_SPEED : KPH_UNIT_SPEED);
         }
 
+        void FixedUpdate()
+        {
+            if (rubberBandingAvailable)
+            {
+                //m_Rigidbody.velocity = rubberBandingFactor * m_Rigidbody.velocity;
+            }
+        }
 
         private void GearChanging()
         {
@@ -394,17 +406,23 @@ namespace UnityStandardAssets.Vehicles.Car
             return false;
         }
 
-
-
         public void addNitro(float nitroQuantity)
         {
             nitro.addSomeNitro(nitroQuantity);
             nitroBar.size = nitro.getRatio();
         }
-    }
 
+        public void rubberBandingOn()
+        {
+            rubberBandingAvailable = true;
+        }
 
+        public void rubberBandingOff()
+        {
+            rubberBandingAvailable = false;
+        }
     }
+}
 
 
 
@@ -449,4 +467,5 @@ namespace UnityStandardAssets.Vehicles.Car
         {
             return (quantityOfNitroLeft / quantityMaxOfNitro);
         }
+
     }
