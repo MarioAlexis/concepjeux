@@ -39,6 +39,12 @@ namespace UnityStandardAssets.Vehicles.Car
         [SerializeField] private float m_SlipLimit;
         [SerializeField] private float m_BrakeTorque;
 
+        // jump-related variables
+        [SerializeField] private float jumpForce = 400000f;
+        [SerializeField] private float jumpTime = 1f;
+        private float jumpTimer = 0f;
+        private float distanceToGround = 0f;
+
         const float MPH_UNIT_SPEED = 2.23693629f;
         const float KPH_UNIT_SPEED = 3.6f;
 
@@ -71,11 +77,6 @@ namespace UnityStandardAssets.Vehicles.Car
 
         public Scrollbar nitroBar;
 
-        //for rubberbanding
-        private bool rubberBandingAvailable;
-        [SerializeField]
-        private float rubberBandingFactor = 1.1f;
-
         // Use this for initialization
         private void Start()
         {
@@ -98,13 +99,6 @@ namespace UnityStandardAssets.Vehicles.Car
             m_unitSpeed = (m_SpeedType == SpeedType.MPH ? MPH_UNIT_SPEED : KPH_UNIT_SPEED);
         }
 
-        void FixedUpdate()
-        {
-            if (rubberBandingAvailable)
-            {
-                //m_Rigidbody.velocity = rubberBandingFactor * m_Rigidbody.velocity;
-            }
-        }
 
         private void GearChanging()
         {
@@ -160,7 +154,7 @@ namespace UnityStandardAssets.Vehicles.Car
         }
 
 
-        public void Move(float steering, float accel, float footbrake, float handbrake, float nitroOn)
+        public void Move(float steering, float accel, float footbrake, float handbrake, float nitroOn, bool jumpPressed)
         {
 
             for (int i = 0; i < 4; i++)
@@ -205,6 +199,17 @@ namespace UnityStandardAssets.Vehicles.Car
                 m_WheelColliders[3].brakeTorque = hbTorque;
             }
 
+            //Jump if possible
+            if (jumpTimer < jumpTime && jumpPressed)
+            {
+                float proportionCompleted = (1 - Mathf.Sqrt(Mathf.Sqrt(jumpTimer / jumpTime))) * 0.15f;
+                m_Rigidbody.AddForce(new Vector3(0f, proportionCompleted * jumpForce, 0f));
+                jumpTimer += Time.deltaTime;
+            }
+            else if (IsGrounded())
+            {
+                jumpTimer = 0;
+            }
 
             CalculateRevs();
             GearChanging();
@@ -406,23 +411,55 @@ namespace UnityStandardAssets.Vehicles.Car
             return false;
         }
 
+
+
         public void addNitro(float nitroQuantity)
         {
             nitro.addSomeNitro(nitroQuantity);
             nitroBar.size = nitro.getRatio();
         }
 
-        public void rubberBandingOn()
+        private bool IsGrounded()
         {
-            rubberBandingAvailable = true;
+            return Physics.Raycast(transform.position, -Vector3.up, distanceToGround + 0.1f);
         }
 
-        public void rubberBandingOff()
+        public void AirDirection(float steering, float barrelRotate, float frontRearRotate )
         {
-            rubberBandingAvailable = false;
+            if (!IsGrounded())
+            {
+                if (steering < 0)
+                {
+                    m_Rigidbody.transform.Rotate(Vector3.up, steering);
+                }
+                else if (steering > 0)
+                {
+                    m_Rigidbody.transform.Rotate(Vector3.up, steering);
+                }
+
+                if (frontRearRotate < 0)
+                {
+                    m_Rigidbody.transform.Rotate(Vector3.right, frontRearRotate);
+                }
+                else if (frontRearRotate > 0)
+                {
+                    m_Rigidbody.transform.Rotate(Vector3.right, frontRearRotate);
+                }
+                if (barrelRotate < 0)
+                {
+                    m_Rigidbody.transform.Rotate(Vector3.forward, -barrelRotate);
+                }
+                if (barrelRotate > 0)
+                {
+                    m_Rigidbody.transform.Rotate(Vector3.forward, -barrelRotate);
+                }
+            }
         }
     }
-}
+
+
+
+    }
 
 
 
@@ -467,5 +504,4 @@ namespace UnityStandardAssets.Vehicles.Car
         {
             return (quantityOfNitroLeft / quantityMaxOfNitro);
         }
-
     }

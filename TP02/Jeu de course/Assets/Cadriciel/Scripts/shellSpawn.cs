@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class shellSpawn : MonoBehaviour {
 
@@ -37,13 +38,20 @@ public class shellSpawn : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && isGreenAvailable)
+        //gestion inputs
+        // -greenshell on left trigger/left clic
+        // -redshell on right trigger/right clic
+        float triggerPosition = CrossPlatformInputManager.GetAxis("shellTrigger");
+        bool greenShellInput = (triggerPosition < -0.5)? true : false;
+        bool redShellInput = (triggerPosition > 0.5) ? true : false;
+
+        if (greenShellInput && isGreenAvailable)
         {
             missileManager = Instantiate(greenMissile, transform.position, transform.rotation) as GameObject;
             greenShellLoadingBar.fillAmount = 0.0f;
             isGreenAvailable = false;
         }
-        if (Input.GetMouseButtonDown(1) && isRedAvailable)
+        if (redShellInput && isRedAvailable)
         {
             missileManager = Instantiate(redMissile, transform.position, transform.rotation) as GameObject;
             redShellLoadingBar.fillAmount = 0.0f;

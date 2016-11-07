@@ -40,5 +40,6 @@ public class NitroRefill : MonoBehaviour {
             this.transform.position = boostInitPos;
             needToReset = false;
         }
+        transform.Rotate(0, Time.deltaTime * 80, 0, Space.World);
     }
 }
