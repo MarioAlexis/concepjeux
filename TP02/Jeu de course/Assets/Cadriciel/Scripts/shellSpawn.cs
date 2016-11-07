@@ -75,4 +75,16 @@ public class shellSpawn : MonoBehaviour {
         }
         return isLoaded;
     }
+
+    public void refillGreenShell()
+    {
+        greenShellLoadingBar.fillAmount = 1.0f;
+        isGreenAvailable = true;
+    }
+
+    public void refillRedShell()
+    {
+        redShellLoadingBar.fillAmount = 1.0f;
+        isRedAvailable = true;
+    }
 }
