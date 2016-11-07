@@ -102,9 +102,13 @@ public class RaceManager : MonoBehaviour
 		foreach (CarUserControl car in _carContainer.GetComponentsInChildren<CarUserControl>(true))
 		{
 			car.enabled = activate;
-		}
+        }
+        foreach (shellSpawn shell in _carContainer.GetComponentsInChildren<shellSpawn>(true))
+        {
+            shell.enabled = activate;
+        }
 
-	}
+    }
 
     public void updateScore()
     {

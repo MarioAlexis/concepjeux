@@ -1579,6 +1579,11 @@ Prefab:
     - target: {fileID: 114000012141680042, guid: 6543adbe546bdff4aa12cc6afbc023dc,
         type: 2}
       propertyPath: rubberBandingFactor
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013411505420, guid: 6543adbe546bdff4aa12cc6afbc023dc,
+        type: 2}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
