@@ -8,7 +8,7 @@ public class GreenShellManager : MonoBehaviour
     [SerializeField]
     private float constantSpeed = 50f;
     private Quaternion constRot;
-    private float constHigh = 1f;
+    private float constHigh = .6f;
 
     //SPIN VARIABLES
     private Transform carTrans;
@@ -31,13 +31,20 @@ public class GreenShellManager : MonoBehaviour
     {
         shellRigi = this.GetComponent<Rigidbody>();
         constRot = this.transform.rotation;
-        constHigh = this.transform.position.y;
         shellRigi.AddRelativeForce(new Vector3(0.0f, 0.0f, 300.0f), ForceMode.Acceleration);
     }
 
     void FixedUpdate()
     {
         shellRigi.velocity = constantSpeed * (shellRigi.velocity.normalized);
+        if (this.transform.position.y > constHigh)
+        {
+            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - .1f, this.transform.position.z);
+        }
+        else if (this.transform.position.y < constHigh)
+        {
+            this.transform.position = new Vector3(this.transform.position.x, constHigh, this.transform.position.z);
+        }
     }
     // Update is called once per frame
     void Update()

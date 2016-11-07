@@ -8,7 +8,7 @@ public class RedShellManager : MonoBehaviour
     [SerializeField]
     private float constantSpeed = 50f;
     private Quaternion constRot;
-    private float constHigh = 1f;
+    private float constHigh = .6f;
     private GameObject target;
     private float deltaTime = 0.0f;
 
@@ -31,7 +31,6 @@ public class RedShellManager : MonoBehaviour
     {
         shellRigi = this.GetComponent<Rigidbody>();
         constRot = this.transform.rotation;
-        constHigh = this.transform.position.y;
         shellRigi.AddRelativeForce(new Vector3(0.0f, 0.0f, 300.0f), ForceMode.Acceleration);
 
         target = FindClosestEnemy();
@@ -48,6 +47,14 @@ public class RedShellManager : MonoBehaviour
             shellRigi.velocity = constantSpeed * (shellRigi.velocity.normalized);
             target = FindClosestEnemy();
             deltaTime += Time.fixedDeltaTime;
+        }
+        if (this.transform.position.y > constHigh)
+        {
+            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - .1f, this.transform.position.z);
+        }
+        else if (this.transform.position.y < constHigh)
+        {
+            this.transform.position = new Vector3(this.transform.position.x, constHigh, this.transform.position.z);
         }
 
     }
