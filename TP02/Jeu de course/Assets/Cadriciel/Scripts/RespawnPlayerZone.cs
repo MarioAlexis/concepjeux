@@ -41,12 +41,12 @@ public class RespawnPlayerZone : MonoBehaviour
                 isAI = true;
             }
 
-            StartCoroutine(StartCountdown());
+            StartCoroutine(StartCountdown(carTrans, carTrans.position));
 
         }
     }
 
-    IEnumerator StartCountdown()
+    IEnumerator StartCountdown(Transform toStand, Vector3 posToStay)
     {
         Annoucement.fontSize = 100;
         Annoucement.pixelOffset = new Vector2(0.0f, 300.0f);
@@ -55,6 +55,7 @@ public class RespawnPlayerZone : MonoBehaviour
         int count = PenalityTimeRespawn;
         do
         {
+            toStand.position = posToStay;
             Annoucement.text = "--> " + count.ToString() + " <--";
             yield return new WaitForSeconds(1.0f);
             count--;

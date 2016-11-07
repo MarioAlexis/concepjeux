@@ -13,9 +13,26 @@ public class BoostPadManager : MonoBehaviour
     private float xVelo, zVelo;
     private float boostAngle, carAngle, diffAngle;
     private float xForce, zForce;
+    private bool isInBoostPad;
+    private float particleDuration = 0f;
+
 	void Start ()
     {
         boostAngle = this.transform.rotation.eulerAngles.y;
+    }
+
+    void FixedUpdate()
+    {
+        if (isInBoostPad && particleDuration < 2f)
+        {
+            carTrans.FindChild("BoostFlame").gameObject.GetComponent<StartBoostFlame>().startBoostEffect();
+            particleDuration += Time.fixedDeltaTime;
+        }
+        else
+        {
+            isInBoostPad = false;
+            particleDuration = 0f;
+        }
     }
 
     void OnTriggerEnter(Collider car)
@@ -49,7 +66,7 @@ public class BoostPadManager : MonoBehaviour
             carRigi.AddRelativeForce(new Vector3(xVelo, 0.0f, zVelo), ForceMode.VelocityChange);
             carRigi.AddRelativeForce(new Vector3(xForce, 0.0f, zForce), ForceMode.Acceleration);
 
-            carTrans.FindChild("BoostFlame").gameObject.GetComponent<StartBoostFlame>().startBoostEffect();
+            isInBoostPad = true;
         }
 
     }

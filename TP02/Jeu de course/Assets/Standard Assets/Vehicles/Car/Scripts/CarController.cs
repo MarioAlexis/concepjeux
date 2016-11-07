@@ -183,15 +183,16 @@ namespace UnityStandardAssets.Vehicles.Car
 
             if (nitroOn > 0 && nitro.nitroQuantity() > 0)
             {
-                Debug.Log("NITRO quantity : "+ nitro.nitroQuantity());
+               // Debug.Log("NITRO quantity : " + nitro.nitroQuantity());
                 nitro.removeSomeNitro(1);
-                m_Rigidbody.AddRelativeForce(new Vector3(0f,0f, nitroBoost));
+                m_Rigidbody.AddRelativeForce(new Vector3(0f, 0f, nitroBoost));
                 nitroBar.size = nitro.getRatio();
-            }
+                transform.FindChild("BoostFlame").SendMessage("startBoostEffect");
+             }
 
             //Set the steer on the front wheels.
             //Assuming that wheels 0 and 1 are the front wheels.
-            m_SteerAngle = steering*m_MaximumSteerAngle;
+                m_SteerAngle = steering*m_MaximumSteerAngle;
             m_WheelColliders[0].steerAngle = m_SteerAngle;
             m_WheelColliders[1].steerAngle = m_SteerAngle;
 
