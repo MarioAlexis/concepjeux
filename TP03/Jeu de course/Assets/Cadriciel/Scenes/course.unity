@@ -1837,10 +1837,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b27507c5d0efbbd47ac8c1de9a1a0a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showOnlyOn: 1
-  content:
-  - {fileID: 0}
-  childrenOfThisObject: 0
+  m_BuildTargetGroup: 0
+  m_Content: []
+  m_MonoBehaviours: []
+  m_ChildrenOfThisObject: 0
 --- !u!4 &639920779
 Transform:
   m_ObjectHideFlags: 0
@@ -1866,10 +1866,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b27507c5d0efbbd47ac8c1de9a1a0a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showOnlyOn: 0
-  content:
-  - {fileID: 0}
-  childrenOfThisObject: 0
+  m_BuildTargetGroup: 0
+  m_Content: []
+  m_MonoBehaviours: []
+  m_ChildrenOfThisObject: 0
 --- !u!4 &654103636 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 93e86b57e56570d46814839867bf9a52, type: 2}
