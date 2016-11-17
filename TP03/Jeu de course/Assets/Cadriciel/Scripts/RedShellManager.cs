@@ -12,6 +12,10 @@ public class RedShellManager : MonoBehaviour
     private GameObject target;
     private float deltaTime = 0.0f;
 
+    //RAYCAST
+    RaycastHit hit;
+    float distanceToGround;
+
     //SPIN VARIABLES
     private Transform carTrans;
     private Rigidbody carRigi;
@@ -31,6 +35,7 @@ public class RedShellManager : MonoBehaviour
     {
         shellRigi = this.GetComponent<Rigidbody>();
         constRot = this.transform.rotation;
+        constRot.x = 0;
         shellRigi.AddRelativeForce(new Vector3(0.0f, 0.0f, 300.0f), ForceMode.Acceleration);
 
         target = FindClosestEnemy();
@@ -48,22 +53,25 @@ public class RedShellManager : MonoBehaviour
             target = FindClosestEnemy();
             deltaTime += Time.fixedDeltaTime;
         }
-        if (this.transform.position.y > constHigh)
+        hit = new RaycastHit();
+        if (Physics.Raycast(transform.position, -Vector3.up, out hit))
         {
-            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - .1f, this.transform.position.z);
+            distanceToGround = hit.distance;
         }
-        else if (this.transform.position.y < constHigh)
+        if (distanceToGround > .7f)
         {
-            this.transform.position = new Vector3(this.transform.position.x, constHigh, this.transform.position.z);
+            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - distanceToGround + .6f, this.transform.position.z);
+        }
+        if (distanceToGround < .5f)
+        {
+            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + distanceToGround, this.transform.position.z);
         }
 
     }
     // Update is called once per frame
     void Update()
     {
-        Vector3 newPos = this.transform.position;
-        newPos.y = constHigh;
-        this.transform.position = newPos;
+
         this.transform.rotation = constRot;
 
         // SPIN UPDATE

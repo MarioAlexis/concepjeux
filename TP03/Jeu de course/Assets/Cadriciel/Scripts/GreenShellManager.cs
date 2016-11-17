@@ -34,6 +34,8 @@ public class GreenShellManager : MonoBehaviour
     {
         shellRigi = this.GetComponent<Rigidbody>();
         constRot = this.transform.rotation;
+        constRot.x = 0;
+
         shellRigi.AddRelativeForce(new Vector3(0.0f, 0.0f, 300.0f), ForceMode.Acceleration);
     }
 
@@ -44,7 +46,6 @@ public class GreenShellManager : MonoBehaviour
         if (Physics.Raycast(transform.position, -Vector3.up, out hit))
         {
             distanceToGround = hit.distance;
-            Debug.Log(distanceToGround);
         }
         if (distanceToGround > .7f)
         {
@@ -59,10 +60,7 @@ public class GreenShellManager : MonoBehaviour
     void Update()
     {
         Vector3 newPos = this.transform.position;
-        //newPos.y = constHigh;
-        //this.transform.position = newPos;
         this.transform.rotation = constRot;
-
 
         // SPIN UPDATE
         if (isSpin && (accDeg < (360 * spinTour)))
