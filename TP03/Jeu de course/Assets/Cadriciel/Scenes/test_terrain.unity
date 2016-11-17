@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.4371031, g: 0.4851864, b: 0.56586176, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -4375,6 +4375,11 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 833115941}
   m_Mesh: {fileID: 4300002, guid: d11d8096e6b14aa43aa74d862d2d01f7, type: 3}
+--- !u!224 &855421674 stripped
+RectTransform:
+  m_PrefabParentObject: {fileID: 224000010855917158, guid: de035eba6bacd5a40af0702f50871dc3,
+    type: 2}
+  m_PrefabInternal: {fileID: 1963724907}
 --- !u!1 &856220084
 GameObject:
   m_ObjectHideFlags: 0
@@ -6181,6 +6186,11 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1335698735}
   m_Mesh: {fileID: 4300002, guid: d11d8096e6b14aa43aa74d862d2d01f7, type: 3}
+--- !u!224 &1375235870 stripped
+RectTransform:
+  m_PrefabParentObject: {fileID: 224000013777247756, guid: 4ca85d2259438974ba80cf1d82c77d1f,
+    type: 2}
+  m_PrefabInternal: {fileID: 785854760}
 --- !u!1 &1391752531
 GameObject:
   m_ObjectHideFlags: 0
@@ -12616,6 +12626,26 @@ Prefab:
       propertyPath: circuit
       value: 
       objectReference: {fileID: 1889359156}
+    - target: {fileID: 114000013411505420, guid: 6543adbe546bdff4aa12cc6afbc023dc,
+        type: 2}
+      propertyPath: greenShellCD
+      value: 
+      objectReference: {fileID: 855421674}
+    - target: {fileID: 114000013411505420, guid: 6543adbe546bdff4aa12cc6afbc023dc,
+        type: 2}
+      propertyPath: greenShellCDTime
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013411505420, guid: 6543adbe546bdff4aa12cc6afbc023dc,
+        type: 2}
+      propertyPath: redShellCD
+      value: 
+      objectReference: {fileID: 1375235870}
+    - target: {fileID: 114000013411505420, guid: 6543adbe546bdff4aa12cc6afbc023dc,
+        type: 2}
+      propertyPath: redShellCDTime
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6543adbe546bdff4aa12cc6afbc023dc, type: 2}
   m_IsPrefabParent: 0
