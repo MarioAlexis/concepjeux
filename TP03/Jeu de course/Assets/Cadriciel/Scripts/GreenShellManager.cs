@@ -8,9 +8,12 @@ public class GreenShellManager : MonoBehaviour
     [SerializeField]
     private float constantSpeed = 50f;
     private Quaternion constRot;
-    private float constHigh = .6f;
 
-    //SPIN VARIABLES
+    //RAYCAST
+    RaycastHit hit;
+    float distanceToGround;
+
+//SPIN VARIABLES
     private Transform carTrans;
     private Rigidbody carRigi;
     private bool isSpin = false;
@@ -37,21 +40,27 @@ public class GreenShellManager : MonoBehaviour
     void FixedUpdate()
     {
         shellRigi.velocity = constantSpeed * (shellRigi.velocity.normalized);
-        if (this.transform.position.y > constHigh)
+        hit = new RaycastHit();
+        if (Physics.Raycast(transform.position, -Vector3.up, out hit))
         {
-            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - .1f, this.transform.position.z);
+            distanceToGround = hit.distance;
+            Debug.Log(distanceToGround);
         }
-        else if (this.transform.position.y < constHigh)
+        if (distanceToGround > .7f)
         {
-            this.transform.position = new Vector3(this.transform.position.x, constHigh, this.transform.position.z);
+            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - distanceToGround + .6f , this.transform.position.z);
+        }
+        if (distanceToGround < .5f)
+        {
+            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + distanceToGround, this.transform.position.z);
         }
     }
     // Update is called once per frame
     void Update()
     {
         Vector3 newPos = this.transform.position;
-        newPos.y = constHigh;
-        this.transform.position = newPos;
+        //newPos.y = constHigh;
+        //this.transform.position = newPos;
         this.transform.rotation = constRot;
 
 
@@ -90,7 +99,7 @@ public class GreenShellManager : MonoBehaviour
             shellRigi.velocity = Vector3.zero;
             this.transform.localScale = Vector3.zero;
             this.transform.position = new Vector3(this.transform.position.x, 3.0f, this.transform.position.z);
-            constHigh = -3.0f;
+            //constHigh = -3.0f;
 
             // MAKE PLAYER SPIN WHEN HIT WITH THE GREEN SHELL
             makePlayerSpin(col.gameObject);
