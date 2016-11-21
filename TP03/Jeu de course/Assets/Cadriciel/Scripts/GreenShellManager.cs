@@ -35,6 +35,7 @@ public class GreenShellManager : MonoBehaviour
         shellRigi = this.GetComponent<Rigidbody>();
         constRot = this.transform.rotation;
         constRot.x = 0;
+        constRot.z = 0;
 
         shellRigi.AddRelativeForce(new Vector3(0.0f, 0.0f, 300.0f), ForceMode.Acceleration);
     }

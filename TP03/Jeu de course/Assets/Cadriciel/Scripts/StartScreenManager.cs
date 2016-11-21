@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class StartScreenManager : MonoBehaviour 
@@ -13,7 +14,7 @@ public class StartScreenManager : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
 		{
-			Application.LoadLevel("course");
-		}
+            SceneManager.LoadScene("test_terrain");
+        }
 	}
 }
