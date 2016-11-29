@@ -10,7 +10,8 @@ public class RedShellManager : MonoBehaviour
     private Quaternion constRot;
     private float constHigh = .6f;
     private GameObject target;
-    private float deltaTime = 0.0f;
+    private float deltaTimeTarget = 0.0f;
+    private float deltaTimeHeight = 0.0f;
 
     //RAYCAST
     RaycastHit hit;
@@ -44,7 +45,7 @@ public class RedShellManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (target != null && deltaTime > .2f)
+        if (target != null && deltaTimeTarget > .2f)
         {
             shellRigi.velocity = (target.transform.position - transform.position).normalized * constantSpeed;
         }
@@ -52,21 +53,27 @@ public class RedShellManager : MonoBehaviour
         {
             shellRigi.velocity = constantSpeed * (shellRigi.velocity.normalized);
             target = FindClosestEnemy();
-            deltaTime += Time.fixedDeltaTime;
+            deltaTimeTarget += Time.fixedDeltaTime;
+        //if (deltaTimeHeight > .01f)
+        //{
+            hit = new RaycastHit();
+            if (Physics.Raycast(transform.position, -Vector3.up, out hit))
+            {
+                distanceToGround = hit.distance;
+            }
+            if (distanceToGround > .75f)
+            {
+                this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - distanceToGround + .6f, this.transform.position.z);
+            }
+            if (distanceToGround < .45f)
+            {
+                this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + distanceToGround, this.transform.position.z);
+            }
+            //deltaTimeHeight = 0;
+        //}
+        //else deltaTimeHeight += Time.fixedDeltaTime;
         }
-        hit = new RaycastHit();
-        if (Physics.Raycast(transform.position, -Vector3.up, out hit))
-        {
-            distanceToGround = hit.distance;
-        }
-        if (distanceToGround > .7f)
-        {
-            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - distanceToGround + .6f, this.transform.position.z);
-        }
-        if (distanceToGround < .5f)
-        {
-            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + distanceToGround, this.transform.position.z);
-        }
+        
 
     }
     // Update is called once per frame

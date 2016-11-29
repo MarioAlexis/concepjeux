@@ -8,6 +8,7 @@ public class GreenShellManager : MonoBehaviour
     [SerializeField]
     private float constantSpeed = 50f;
     private Quaternion constRot;
+    private float deltaTimeHeight = 0.0f;
 
     //RAYCAST
     RaycastHit hit;
@@ -43,19 +44,24 @@ public class GreenShellManager : MonoBehaviour
     void FixedUpdate()
     {
         shellRigi.velocity = constantSpeed * (shellRigi.velocity.normalized);
-        hit = new RaycastHit();
-        if (Physics.Raycast(transform.position, -Vector3.up, out hit))
+        if (deltaTimeHeight > .05f)
         {
-            distanceToGround = hit.distance;
+            hit = new RaycastHit();
+            if (Physics.Raycast(transform.position, -Vector3.up, out hit))
+            {
+                distanceToGround = hit.distance;
+            }
+            if (distanceToGround > .7f)
+            {
+                this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - distanceToGround + .6f, this.transform.position.z);
+            }
+            if (distanceToGround < .5f)
+            {
+                this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + distanceToGround, this.transform.position.z);
+            }
+            deltaTimeHeight = 0;
         }
-        if (distanceToGround > .7f)
-        {
-            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - distanceToGround + .6f , this.transform.position.z);
-        }
-        if (distanceToGround < .5f)
-        {
-            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + distanceToGround, this.transform.position.z);
-        }
+        else deltaTimeHeight += Time.fixedDeltaTime;
     }
     // Update is called once per frame
     void Update()
