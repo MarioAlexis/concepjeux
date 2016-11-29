@@ -45,6 +45,8 @@ namespace UnityStandardAssets.Vehicles.Car
         private float m_AvoidPathOffset;          // direction (-1 or 1) in which to offset path to avoid other car, whilst avoiding
         private Rigidbody m_Rigidbody;
 
+        private Vector3 lastpos;
+        private float lastTimemoved;
 
         private void Awake()
         {
@@ -55,6 +57,8 @@ namespace UnityStandardAssets.Vehicles.Car
             m_RandomPerlin = Random.value*100;
 
             m_Rigidbody = GetComponent<Rigidbody>();
+
+           // lastpos = this.gameObject.transform.position;
         }
 
 
@@ -166,6 +170,12 @@ namespace UnityStandardAssets.Vehicles.Car
 
                 // get the amount of steering needed to aim the car towards the target
                 float steer = Mathf.Clamp(targetAngle*m_SteerSensitivity, -1, 1)*Mathf.Sign(m_CarController.CurrentSpeed);
+
+                // check si bloqué et s'il faut reculer
+                /*if(lastTimemoved + 1 < Time.time)
+                {
+                    accel = -1;
+                }*/
 
                 // feed input to the car controller.
                 m_CarController.Move(steer, accel, accel, 0f, 0f, false);
