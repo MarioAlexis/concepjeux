@@ -23,9 +23,10 @@ GameObject:
   - 23: {fileID: 23000012719955014}
   - 64: {fileID: 64000010200809036}
   - 114: {fileID: 114000010734209386}
+  - 65: {fileID: 65000011923879808}
   m_Layer: 0
   m_Name: default
-  m_TagString: wall
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -41,7 +42,7 @@ GameObject:
   - 114: {fileID: 114000012236499986}
   m_Layer: 0
   m_Name: Wall
-  m_TagString: wall
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -53,7 +54,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010697129164}
   m_LocalRotation: {x: 0, y: 0.13900028, z: 0, w: 0.9902924}
-  m_LocalPosition: {x: -1.88, y: 0, z: -4.16}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2.38, y: 1.24, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 15.98, z: 0}
   m_Children: []
@@ -65,10 +66,10 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012546109750}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -274.32562, y: -0.47665972, z: 19.217255}
-  m_LocalScale: {x: 0.44, y: 0.76, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: -26.81, z: 0}
+  m_LocalRotation: {x: 0, y: 0.6990396, z: 0, w: 0.715083}
+  m_LocalPosition: {x: 285.14, y: 159, z: 157.69}
+  m_LocalScale: {x: 0.8, y: 1.4699999, z: 0.7464813}
+  m_LocalEulerAnglesHint: {x: 0, y: 88.7, z: 0}
   m_Children:
   - {fileID: 4000011782243322}
   m_Father: {fileID: 0}
@@ -121,6 +122,18 @@ MeshCollider:
   serializedVersion: 2
   m_Convex: 1
   m_Mesh: {fileID: 4300000, guid: 43837c369880bc64b88cccde9ad51890, type: 3}
+--- !u!65 &65000011923879808
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010697129164}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 11.17488, y: 4.999999, z: 6.1027412}
+  m_Center: {x: -0.0006875806, y: 3.049818, z: 0.21019709}
 --- !u!114 &114000010734209386
 MonoBehaviour:
   m_ObjectHideFlags: 1
