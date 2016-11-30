@@ -12,36 +12,36 @@ public class Checkpoint : MonoBehaviour
 
     private int count = 0;
 
-	void OnTriggerEnter(Collider other)
+	void OnTriggerEnter(Collider coll)
 	{
-		if (other as WheelCollider == null)
+		if (coll as WheelCollider == null)
 		{
-			CarController car = other.transform.GetComponentInParent<CarController>();
+			CarController car = coll.transform.GetComponentInParent<CarController>();
 			if (car)
 			{
 				_manager.CheckpointTriggered(car,_index);
 
 			}
 		}
-        if (other.name == "ColliderFront")
+        if (coll.name == "ColliderFront")
         {
-            //Debug.Log("sending rubberBandingOff");
-            other.transform.parent.transform.parent.gameObject.SendMessage("rubberBandingOff");
+            Debug.Log("sending rubberBandingOff");
+            coll.transform.parent.transform.parent.gameObject.SendMessage("rubberBandingOff");
         }
 	}
 
-    void OnTriggerExit(Collider other)
+    void OnTriggerExit(Collider coll)
     {
-        if (other.name == "ColliderFront")
+        if (coll.name == "ColliderFront")
         {
             count++;
             if (count > 4)
             {
-                //Debug.Log("sending rubberBandingOn");
-                other.transform.parent.transform.parent.gameObject.SendMessage("rubberBandingOn");
+                Debug.Log("sending rubberBandingOn");
+                coll.transform.parent.transform.parent.gameObject.SendMessage("rubberBandingOn");
             }
             if (count >= 8) count = 0;
-            //Debug.Log(count);
+            Debug.Log(count);
         }   
     }
 }
