@@ -36586,6 +36586,63 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c51050087ea26c14e952d5c3001ec5f7, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &718886690
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 718886691}
+  - 65: {fileID: 718886693}
+  - 114: {fileID: 718886692}
+  m_Layer: 0
+  m_Name: afterHillTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &718886691
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 718886690}
+  m_LocalRotation: {x: -0, y: -0.38786155, z: -0, w: 0.92171764}
+  m_LocalPosition: {x: 1253.6, y: 792, z: 486.9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: -45.776, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1194018762}
+  m_RootOrder: 3
+--- !u!114 &718886692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 718886690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6c2cc5c878495144adaa01a62a85e76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 480683329}
+  carplayer: {fileID: 1712054379}
+  timeOfRotation: 4
+  whichPassage: 4
+--- !u!65 &718886693
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 718886690}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 30, y: 38.3, z: 110}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &719240050
 Prefab:
   m_ObjectHideFlags: 0
@@ -54046,6 +54103,63 @@ Rigidbody:
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 49bfd2e7a273e7a4ca574b30808dd0b4, type: 2}
   m_PrefabInternal: {fileID: 593965189}
+--- !u!1 &1133315952
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1133315953}
+  - 65: {fileID: 1133315955}
+  - 114: {fileID: 1133315954}
+  m_Layer: 0
+  m_Name: onHillTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1133315953
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1133315952}
+  m_LocalRotation: {x: -0, y: -0.38786155, z: -0, w: 0.92171764}
+  m_LocalPosition: {x: 953.5, y: 1018.5, z: 189.9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: -45.776, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1194018762}
+  m_RootOrder: 1
+--- !u!114 &1133315954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1133315952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6c2cc5c878495144adaa01a62a85e76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 480683329}
+  carplayer: {fileID: 1712054379}
+  timeOfRotation: 3
+  whichPassage: 2
+--- !u!65 &1133315955
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1133315952}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 30, y: 38.3, z: 110}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1133327871
 GameObject:
   m_ObjectHideFlags: 0
@@ -57424,6 +57538,38 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1191476892}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1194018761
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1194018762}
+  m_Layer: 0
+  m_Name: CameraTriggers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1194018762
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1194018761}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -389.9218, y: -607.2232, z: 393.64908}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 1585776072}
+  - {fileID: 1133315953}
+  - {fileID: 1999928697}
+  - {fileID: 718886691}
+  m_Father: {fileID: 0}
+  m_RootOrder: 19
 --- !u!1 &1194697153
 GameObject:
   m_ObjectHideFlags: 0
@@ -77211,6 +77357,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 684084651}
   m_RootOrder: 32
+--- !u!1 &1585776071
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1585776072}
+  - 65: {fileID: 1585776074}
+  - 114: {fileID: 1585776073}
+  m_Layer: 0
+  m_Name: beforeHillTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1585776072
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1585776071}
+  m_LocalRotation: {x: -0, y: -0.2765882, z: -0, w: 0.9609886}
+  m_LocalPosition: {x: 523, y: 784, z: -155.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: -32.217003, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1194018762}
+  m_RootOrder: 0
+--- !u!114 &1585776073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1585776071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6c2cc5c878495144adaa01a62a85e76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 480683329}
+  carplayer: {fileID: 1712054379}
+  timeOfRotation: 2
+  whichPassage: 1
+--- !u!65 &1585776074
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1585776071}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 30, y: 38.3, z: 110}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1590621733
 GameObject:
   m_ObjectHideFlags: 0
@@ -97546,6 +97749,63 @@ WheelCollider:
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 62317ef00c9448d4494341221e1c2aa1, type: 2}
   m_PrefabInternal: {fileID: 299123707}
+--- !u!1 &1999928696
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1999928697}
+  - 65: {fileID: 1999928699}
+  - 114: {fileID: 1999928698}
+  m_Layer: 0
+  m_Name: midHillTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1999928697
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1999928696}
+  m_LocalRotation: {x: -0, y: -0.38786155, z: -0, w: 0.92171764}
+  m_LocalPosition: {x: 1103.6, y: 923.7, z: 345.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: -45.776, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1194018762}
+  m_RootOrder: 2
+--- !u!114 &1999928698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1999928696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6c2cc5c878495144adaa01a62a85e76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 480683329}
+  carplayer: {fileID: 1712054379}
+  timeOfRotation: 1
+  whichPassage: 3
+--- !u!65 &1999928699
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1999928696}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 30, y: 38.3, z: 110}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2000025021
 GameObject:
   m_ObjectHideFlags: 0
