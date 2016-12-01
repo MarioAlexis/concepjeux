@@ -19,18 +19,16 @@ public class RaceManager : MonoBehaviour
 	[SerializeField]
 	private int _endCountdown;
 
+    public GameObject joueur;
+
     public GUIText scoreText;
 
     private int score;
 
-    //public GUIText nextTurnSignal;
-
-    //private string turnSignal;
-
 	// Use this for initialization
 	void Awake () 
 	{
-		CarActivation(false);
+		CarActivation(false, false);
 
 	}
 	
@@ -54,7 +52,7 @@ public class RaceManager : MonoBehaviour
 		}
 		while (count > 0);
 		_announcement.text = "Partez!";
-		CarActivation(true);
+		CarActivation(true, false);
 		yield return new WaitForSeconds(1.0f);
 		_announcement.text = "";
 	}
@@ -66,7 +64,9 @@ public class RaceManager : MonoBehaviour
 
 	IEnumerator EndRaceImpl(string winner)
 	{
-		CarActivation(false);
+        //ICI METTRE ROUTINE IA A LA PLACE
+		CarActivation(false, true);
+        joueur.gameObject.SendMessage("SwitchCam");
 		_announcement.fontSize = 20;
 		int count = _endCountdown;
 		do 
@@ -92,7 +92,7 @@ public class RaceManager : MonoBehaviour
 		_announcement.text = "";
 	}
 
-	public void CarActivation(bool activate)
+	public void CarActivation(bool activate, bool raceEnd)
 	{
 		foreach (CarAIControl car in _carContainer.GetComponentsInChildren<CarAIControl>(true))
 		{
@@ -102,6 +102,8 @@ public class RaceManager : MonoBehaviour
 		foreach (CarUserControl car in _carContainer.GetComponentsInChildren<CarUserControl>(true))
 		{
 			car.enabled = activate;
+            car.GetComponentInParent<CarAIControl>().enabled = false;
+            if (raceEnd == true) car.GetComponentInParent<CarAIControl>().enabled = raceEnd;
         }
         foreach (shellSpawn shell in _carContainer.GetComponentsInChildren<shellSpawn>(true))
         {

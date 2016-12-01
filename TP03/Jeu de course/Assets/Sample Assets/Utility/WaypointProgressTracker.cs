@@ -11,7 +11,13 @@ namespace UnityStandardAssets.Utility
         // This script manages the amount to look ahead along the route,
         // and keeps track of progress and laps.
 
-        [SerializeField] private WaypointCircuit circuit; // A reference to the waypoint-based route we should follow
+        [SerializeField]
+        private WaypointCircuit circuit1; // A reference to the waypoint-based route we should follow
+
+        [SerializeField]
+        private WaypointCircuit circuit2; // A reference to the waypoint-based route we should follow
+
+        private WaypointCircuit circuit;
 
         [SerializeField] private float lookAheadForTargetOffset = 5;
         // The offset ahead along the route that the we will aim for
@@ -58,6 +64,7 @@ namespace UnityStandardAssets.Utility
 
             // You can manually create a transform and assign it to this component *and* the AI,
             // then this component will update it, and the AI can read it.
+            circuit = circuit1;
             if (target == null)
             {
                 target = new GameObject(name + " Waypoint Target").transform;
@@ -148,5 +155,11 @@ namespace UnityStandardAssets.Utility
                 Gizmos.DrawLine(target.position, target.position + target.forward);
             }
         }
+
+        void SwitchPath()
+        {
+            circuit = circuit2;
+        }
+
     }
 }
