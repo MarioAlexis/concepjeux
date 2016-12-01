@@ -13,6 +13,8 @@ public class CheckpointManager : MonoBehaviour
 	[SerializeField]
 	private int _totalLaps;
 
+    private int nbCarsFinished = 0;
+
 	private bool _finished = false;
 	
 	private Dictionary<CarController,PositionData> _carPositions = new Dictionary<CarController, PositionData>();
@@ -38,8 +40,8 @@ public class CheckpointManager : MonoBehaviour
 
 		PositionData carData = _carPositions[car];
 
-		if (!_finished)
-		{
+		//if (!_finished)
+		//{
 			if (checkPointIndex == 0)
 			{
 				if (carData.checkPoint == _checkPointCount-1)
@@ -53,18 +55,23 @@ public class CheckpointManager : MonoBehaviour
                         car.addNitro(50f);
 					}
 
-					if (carData.lap >= _totalLaps)
+					if (carData.lap == _totalLaps)
 					{
-						_finished = true;
-						GetComponent<RaceManager>().EndRace(car.name.ToLower());
+                        //_finished = true;
+                        nbCarsFinished++;
+                        Debug.Log("TOUR FINI");
+                        Debug.Log(nbCarsFinished);
+                        GetComponent<RaceManager>().EndCarRace(car, nbCarsFinished);
 					}
-				}
+                    //if (nbCarsFinished >= 8) GetComponent<RaceManager>().RaceEnded();
+
+                }
 			}
 			else if (carData.checkPoint == checkPointIndex-1) //Checkpoints must be hit in order
 			{
 				carData.checkPoint = checkPointIndex;
 			}
-		}
+		//}
 
 
 	}

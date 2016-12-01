@@ -5,8 +5,6 @@ using UnityStandardAssets.Vehicles.Car;
 
 public class RaceManager : MonoBehaviour 
 {
-
-
 	[SerializeField]
 	private GameObject _carContainer;
 
@@ -19,17 +17,21 @@ public class RaceManager : MonoBehaviour
 	[SerializeField]
 	private int _endCountdown;
 
-    public GameObject joueur;
+    private string ranking;
+
+    private bool raceEnd;
 
     public GUIText scoreText;
 
     private int score;
 
+    private bool restart = false;
+
 	// Use this for initialization
 	void Awake () 
 	{
-		CarActivation(false, false);
-
+		CarActivation(false);
+        ShellActivation(false);
 	}
 	
 	void Start()
@@ -39,9 +41,19 @@ public class RaceManager : MonoBehaviour
         updateScore();
        // updateTurnSignal();
         StartCoroutine(StartCountdown());
-	}
+        //ranking = new string[8];
+    }
 
-	IEnumerator StartCountdown()
+    void Update()
+    {
+        if (raceEnd)
+        {
+            _announcement.fontSize = 16;
+            _announcement.text = ranking;
+        }
+    }
+
+    IEnumerator StartCountdown()
 	{
 		int count = _timeToStart;
 		do 
@@ -52,31 +64,44 @@ public class RaceManager : MonoBehaviour
 		}
 		while (count > 0);
 		_announcement.text = "Partez!";
-		CarActivation(true, false);
+		CarActivation(true);
+        ShellActivation(true);
 		yield return new WaitForSeconds(1.0f);
 		_announcement.text = "";
 	}
 
-	public void EndRace(string winner)
+	public void EndCarRace(CarController car, int position)
 	{
-		StartCoroutine(EndRaceImpl(winner));
-	}
+        AddToRanking(car.gameObject.name, position);
+        Debug.Log(car.gameObject.name);
+        if (car.gameObject.name == "Joueur 1")
+        {
+            ShellActivation(false);
+            car.GetComponentInParent<CarUserControl>().enabled = false;
+            car.GetComponentInParent<CarAIControl>().enabled = true;
+            car.gameObject.SendMessage("SwitchCam");
+            raceEnd = true;
+        }
+    }
 
-	IEnumerator EndRaceImpl(string winner)
-	{
-        //ICI METTRE ROUTINE IA A LA PLACE
-		CarActivation(false, true);
-        joueur.gameObject.SendMessage("SwitchCam");
+    public void AddToRanking(string carName, int position)
+    {
+        //ranking[rankingIndex] = carName + " - Position : " + position + " - Temps : " + (int)(Time.time/60) + ":" + Time.time%60;
+        //rankingIndex++;
+        ranking = ranking + carName + " - Position : " + position + " - Temps : " + (int)(Time.time / 60) + ":" + Time.time % 60 + "\n";
+    }
 
+    //IEnumerator EndRaceImpl(string winner)
+    private void EndRaceImpl(string winner)
+    {
 		_announcement.fontSize = 20;
-		int count = _endCountdown;
-		do 
-		{
-			_announcement.text = "Victoire: " + winner + " en premiere place. Retour au titre dans " + count.ToString();
-			yield return new WaitForSeconds(1.0f);
-			count--;
-		}
-		while (count > 0);
+        //int count = _endCountdown;
+        //do
+        {
+            _announcement.text = "Joueur : " + winner; // + " en premiere place."; Retour au titre dans "; + count.ToString();
+            //count--;
+        }
+        //while (!Input.GetKeyDown(KeyCode.Return));//count > 0);
 
 		Application.LoadLevel("boot");
 	}
@@ -93,27 +118,28 @@ public class RaceManager : MonoBehaviour
 		_announcement.text = "";
 	}
 
-	public void CarActivation(bool activate, bool raceEnd)
+    public void CarActivation(bool activate)
 	{
 		foreach (CarAIControl car in _carContainer.GetComponentsInChildren<CarAIControl>(true))
 		{
 			car.enabled = activate;
-		}
-		
-		foreach (CarUserControl car in _carContainer.GetComponentsInChildren<CarUserControl>(true))
-		{
-			car.enabled = activate;
-            car.GetComponentInParent<CarAIControl>().enabled = false;
-            if (raceEnd == true) car.GetComponentInParent<CarAIControl>().enabled = raceEnd;
         }
+        foreach (CarUserControl car in _carContainer.GetComponentsInChildren<CarUserControl>(true))
+        {
+            car.enabled = activate;
+            car.GetComponentInParent<CarAIControl>().enabled = false;
+        }
+    }
+
+    public void ShellActivation(bool activate)
+    {
         foreach (shellSpawn shell in _carContainer.GetComponentsInChildren<shellSpawn>(true))
         {
             shell.enabled = activate;
         }
-
     }
 
-    public void updateScore()
+public void updateScore()
     {
         scoreText.text = "score : " + score;
     }

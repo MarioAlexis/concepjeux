@@ -25,7 +25,7 @@ public class Checkpoint : MonoBehaviour
 		}
         if (coll.name == "ColliderFront")
         {
-            Debug.Log("sending rubberBandingOff");
+            //Debug.Log("sending rubberBandingOff");
             coll.transform.parent.transform.parent.gameObject.SendMessage("rubberBandingOff");
         }
 	}
@@ -37,11 +37,11 @@ public class Checkpoint : MonoBehaviour
             count++;
             if (count > 4)
             {
-                Debug.Log("sending rubberBandingOn");
+                //Debug.Log("sending rubberBandingOn");
                 coll.transform.parent.transform.parent.gameObject.SendMessage("rubberBandingOn");
             }
             if (count >= 8) count = 0;
-            Debug.Log(count);
+            //Debug.Log(count);
         }   
     }
 }

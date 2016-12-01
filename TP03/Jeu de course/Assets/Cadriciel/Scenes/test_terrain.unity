@@ -44714,7 +44714,6 @@ MonoBehaviour:
   _announcement: {fileID: 1115927144}
   _timeToStart: 3
   _endCountdown: 30
-  joueur: {fileID: 1712054378}
   scoreText: {fileID: 359372027}
 --- !u!4 &879263591
 Transform:
@@ -83738,7 +83737,7 @@ Behaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1726452617}
-  m_Enabled: 0
+  m_Enabled: 1
 --- !u!124 &1726452621
 Behaviour:
   m_ObjectHideFlags: 0
