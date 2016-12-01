@@ -20,5 +20,6 @@ public class CameraSwitch : MonoBehaviour {
         camJeu.GetComponent<AudioListener>().enabled = false;
         camFin.enabled = true;
         camFin.GetComponent<AudioListener>().enabled = true;
+        //camFin.GetComponentInParent<AutoCam>().enabled = false;
     }
 }

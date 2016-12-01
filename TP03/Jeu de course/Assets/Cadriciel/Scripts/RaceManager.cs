@@ -67,6 +67,7 @@ public class RaceManager : MonoBehaviour
         //ICI METTRE ROUTINE IA A LA PLACE
 		CarActivation(false, true);
         joueur.gameObject.SendMessage("SwitchCam");
+
 		_announcement.fontSize = 20;
 		int count = _endCountdown;
 		do 
