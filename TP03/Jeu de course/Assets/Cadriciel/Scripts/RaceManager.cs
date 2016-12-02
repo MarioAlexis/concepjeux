@@ -49,7 +49,12 @@ public class RaceManager : MonoBehaviour
         if (raceEnd)
         {
             _announcement.fontSize = 16;
-            _announcement.text = ranking;
+            _announcement.text = ranking + "\n" + "Appuez sur Enter pour quitter la partie";
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                RaceEnded();
+                raceEnd = false;
+            }
         }
     }
 
@@ -86,22 +91,25 @@ public class RaceManager : MonoBehaviour
 
     public void AddToRanking(string carName, int position)
     {
-        //ranking[rankingIndex] = carName + " - Position : " + position + " - Temps : " + (int)(Time.time/60) + ":" + Time.time%60;
-        //rankingIndex++;
         ranking = ranking + carName + " - Position : " + position + " - Temps : " + (int)(Time.time / 60) + ":" + Time.time % 60 + "\n";
     }
 
-    //IEnumerator EndRaceImpl(string winner)
-    private void EndRaceImpl(string winner)
+    public void RaceEnded()
+    {
+        StartCoroutine(RaceEndedRoutine());
+    }
+
+    IEnumerator RaceEndedRoutine()
     {
 		_announcement.fontSize = 20;
-        //int count = _endCountdown;
-        //do
+        int count = _endCountdown;
+        do
         {
-            _announcement.text = "Joueur : " + winner; // + " en premiere place."; Retour au titre dans "; + count.ToString();
-            //count--;
+            _announcement.text = "Retour au titre dans " + count.ToString();
+            yield return new WaitForSeconds(1.0f);
+            count--;
         }
-        //while (!Input.GetKeyDown(KeyCode.Return));//count > 0);
+        while (count > 0);
 
 		Application.LoadLevel("boot");
 	}

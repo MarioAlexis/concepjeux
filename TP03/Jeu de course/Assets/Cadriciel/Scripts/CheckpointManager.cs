@@ -63,8 +63,7 @@ public class CheckpointManager : MonoBehaviour
                         Debug.Log(nbCarsFinished);
                         GetComponent<RaceManager>().EndCarRace(car, nbCarsFinished);
 					}
-                    //if (nbCarsFinished >= 8) GetComponent<RaceManager>().RaceEnded();
-
+                    if (nbCarsFinished >= 8) GetComponent<RaceManager>().RaceEnded();
                 }
 			}
 			else if (carData.checkPoint == checkPointIndex-1) //Checkpoints must be hit in order
