@@ -28,7 +28,6 @@ public class UIBoot : MonoBehaviour {
         }
         else
         {
-            Debug.Log(timeStamp);
             if (timeStamp > 1f)
             {
                 displayText = !displayText;
