@@ -18,9 +18,9 @@ public class WallDestruction : MonoBehaviour
         {
             Destroy(this.gameObject);
             GameObject tmpwall = Instantiate(DebrisPrefab, this.transform.position, this.transform.rotation) as GameObject;
-            Minimap.gameObject.SendMessage("WallBreak");
-            car.gameObject.SendMessage("SwitchPath");
             tmpwall.transform.localScale = this.transform.localScale;
+            Minimap.gameObject.SendMessage("WallBreak");
+            car.gameObject.SendMessage("SwitchPath");            
         }
 
     }
