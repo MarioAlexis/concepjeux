@@ -24,7 +24,6 @@ GameObject:
   - 54: {fileID: 54000010138792808}
   - 135: {fileID: 135000013359281974}
   - 82: {fileID: 82000012001448016}
-  - 65: {fileID: 65000012543798272}
   - 135: {fileID: 135000012618934870}
   m_Layer: 0
   m_Name: LavaStone
@@ -164,18 +163,6 @@ Rigidbody:
   m_Interpolate: 2
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &65000012543798272
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000011596535872}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.023460478, y: 0.021585066, z: 0.020942079}
-  m_Center: {x: -0.0001379, y: 0.00017537735, z: -0.00015910435}
 --- !u!82 &82000012001448016
 AudioSource:
   m_ObjectHideFlags: 1
