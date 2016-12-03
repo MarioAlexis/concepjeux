@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityStandardAssets.CrossPlatformInput;
+using UnityEngine.UI;
 using System.Collections;
 
 public class StartScreenManager : MonoBehaviour 
 {
-    public GUIText text;
+    public Image instructions;
     private bool canEnterGame = false;
 
 	void Awake()
@@ -15,8 +17,8 @@ public class StartScreenManager : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-        if (text.GetComponent<GUIText>().enabled == true) canEnterGame = true;
-		if (Input.GetKeyDown(KeyCode.Return) && canEnterGame == true)
+        if (instructions.GetComponent<Image>().enabled == true) canEnterGame = true;
+		if (CrossPlatformInputManager.GetButton("Submit") && canEnterGame == true)
 		{
             SceneManager.LoadScene("test_terrain");
         }
