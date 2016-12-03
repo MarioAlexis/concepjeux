@@ -7,8 +7,8 @@ public class WallDestruction : MonoBehaviour
     GameObject DebrisPrefab;
 
     public GameObject Minimap;
-
     public GameObject car;
+
 	// Use this for initialization
 
     void OnTriggerEnter(Collider projectile)
@@ -19,9 +19,12 @@ public class WallDestruction : MonoBehaviour
             Destroy(this.gameObject);
             GameObject tmpwall = Instantiate(DebrisPrefab, this.transform.position, this.transform.rotation) as GameObject;
             tmpwall.transform.localScale = this.transform.localScale;
-            Minimap.gameObject.SendMessage("WallBreak");
-            car.gameObject.SendMessage("SwitchPath");            
+            if (this.transform.parent.gameObject.name == "WallBegin")
+            {
+                car.gameObject.SendMessage("SwitchPath");
+                Minimap.gameObject.SendMessage("WallBreak1");
+            }
+            if (this.transform.parent.gameObject.name == "WallEnd") Minimap.gameObject.SendMessage("WallBreak2");
         }
-
     }
 }
