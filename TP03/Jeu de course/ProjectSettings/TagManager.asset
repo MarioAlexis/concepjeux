@@ -13,6 +13,7 @@ TagManager:
   - shell
   - player
   - stone
+  - waypoint
   layers:
   - Default
   - TransparentFX
