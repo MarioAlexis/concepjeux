@@ -50,7 +50,6 @@ namespace UnityStandardAssets.Vehicles.Car
                 if (distanceToGround2 - distanceToGround1 > 1) CamRigi.transform.Rotate(-constantRot, 0, 0);*/
                 if (Time.time >= 34 && Time.time <= 76)
                 {
-                    Debug.Log(Time.time);
                     //CamRigi.velocity = transform.forward * constantSpeed;
                     if (Time.time <= 35) CamRigi.transform.Rotate(-35 * Time.fixedDeltaTime, 0, 0);
                     if (Time.time >= 50 && Time.time <= 59) CamRigi.transform.Rotate(8 * Time.fixedDeltaTime, 0, 0);
@@ -68,7 +67,6 @@ namespace UnityStandardAssets.Vehicles.Car
             }
             else
             {
-                Debug.Log(Time.time);
                 target = FindNextWaypoint();
                 doRotate = true;
                 startTime = Time.time;
@@ -83,7 +81,6 @@ namespace UnityStandardAssets.Vehicles.Car
             GameObject findClosest = null;
             float distance = Mathf.Infinity;
             Vector3 position = transform.position;
-            Debug.Log(position);
             foreach (GameObject waypoint in waypoints)
             {
                 Vector3 diff = waypoint.transform.position - position;
