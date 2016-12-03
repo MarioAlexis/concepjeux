@@ -3,7 +3,8 @@ using System.Collections;
 
 public class DestroyStone : MonoBehaviour
 {
-
+    [SerializeField]
+    GameObject DestroyEffect;
 	// Use this for initialization
 	void Start ()
     {
@@ -21,6 +22,8 @@ public class DestroyStone : MonoBehaviour
         if(stone.tag == "stone")
         {
             Destroy(stone.gameObject);
+            GameObject effect = Instantiate(DestroyEffect, stone.transform.position, Quaternion.identity) as GameObject;
+            Destroy(effect, 5.0f);
         }
     }
 }

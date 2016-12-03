@@ -15,42 +15,40 @@ public class SlideEffect : MonoBehaviour {
 
    void OnTriggerEnter(Collider car)
     {
-        if(car.tag == "player")
+        if(car.tag == "player" || car.tag == "ai")
         {
-            Debug.Log("Player glisse");
             Transform wheels = car.gameObject.transform.parent.transform.parent.Find("WheelsHubs");
-            Debug.Log(wheels.name);
             int nbChild = wheels.childCount;
-            Debug.Log(nbChild);
             for (int i=0; i < nbChild; i++)
             {
                 Transform child = wheels.GetChild(i);
-                Debug.Log(child.name);
                 WheelCollider singleWheel = child.GetComponent<WheelCollider>();
-                WheelFrictionCurve frictionCurve = singleWheel.sidewaysFriction;
-                frictionCurve.stiffness = 0.1f;
-                singleWheel.sidewaysFriction = frictionCurve;
+                WheelFrictionCurve side_Friction = singleWheel.sidewaysFriction;
+                WheelFrictionCurve forward_Friction = singleWheel.forwardFriction;
+                side_Friction.stiffness = 0.1f;
+                forward_Friction.stiffness = 0.75f;
+                singleWheel.sidewaysFriction = side_Friction;
+                singleWheel.forwardFriction = forward_Friction;
             }
         }
     }
 
     void OnTriggerExit(Collider car)
     {
-        if (car.tag == "player")
+        if (car.tag == "player" || car.tag == "ai")
         {
-            Debug.Log("Player glisse");
             Transform wheels = car.gameObject.transform.parent.transform.parent.Find("WheelsHubs");
-            Debug.Log(wheels.name);
             int nbChild = wheels.childCount;
-            Debug.Log(nbChild);
             for (int i = 0; i < nbChild; i++)
             {
                 Transform child = wheels.GetChild(i);
-                Debug.Log(child.name);
                 WheelCollider singleWheel = child.GetComponent<WheelCollider>();
-                WheelFrictionCurve frictionCurve = singleWheel.sidewaysFriction;
-                frictionCurve.stiffness = 1.0f;
-                singleWheel.sidewaysFriction = frictionCurve;
+                WheelFrictionCurve side_Friction = singleWheel.sidewaysFriction;
+                WheelFrictionCurve forward_Friction = singleWheel.forwardFriction;
+                side_Friction.stiffness = 1.0f;
+                forward_Friction.stiffness = 1.0f;
+                singleWheel.sidewaysFriction = side_Friction;
+                singleWheel.forwardFriction = forward_Friction;
             }
         }
     }
