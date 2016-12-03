@@ -150,10 +150,10 @@ AudioSource:
   Loop: 0
   Mute: 0
   Spatialize: 0
-  Priority: 155
+  Priority: 45
   DopplerLevel: 1
-  MinDistance: 2
-  MaxDistance: 40
+  MinDistance: 50
+  MaxDistance: 85
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -179,7 +179,7 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -201,7 +201,7 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - time: 0
-      value: 0
+      value: 1.1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -283,7 +283,7 @@ ParticleSystem:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010122461018}
-  serializedVersion: 4
+  serializedVersion: 2
   lengthInSec: 1
   startDelay:
     scalar: 0
@@ -321,13 +321,12 @@ ParticleSystem:
       m_RotationOrder: 4
     minMaxState: 0
   speed: 1
+  randomSeed: 1345606641
   looping: 0
   prewarm: 0
   playOnAwake: 0
   moveWithTransform: 0
-  autoRandomSeed: 1
   scalingMode: 2
-  randomSeed: 1345606641
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -1987,7 +1986,7 @@ ParticleSystem:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010153037958}
-  serializedVersion: 4
+  serializedVersion: 2
   lengthInSec: 1
   startDelay:
     scalar: 0
@@ -2025,13 +2024,12 @@ ParticleSystem:
       m_RotationOrder: 4
     minMaxState: 0
   speed: 1
+  randomSeed: 2708678573
   looping: 0
   prewarm: 0
   playOnAwake: 0
   moveWithTransform: 0
-  autoRandomSeed: 1
   scalingMode: 2
-  randomSeed: -1586288723
   InitialModule:
     serializedVersion: 2
     enabled: 1

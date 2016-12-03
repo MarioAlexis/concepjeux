@@ -24,8 +24,8 @@ GameObject:
   - 54: {fileID: 54000010138792808}
   - 135: {fileID: 135000013359281974}
   - 82: {fileID: 82000012001448016}
-  - 135: {fileID: 135000011417745660}
-  - 114: {fileID: 114000010547578274}
+  - 65: {fileID: 65000012543798272}
+  - 135: {fileID: 135000012618934870}
   m_Layer: 0
   m_Name: LavaStone
   m_TagString: stone
@@ -164,6 +164,18 @@ Rigidbody:
   m_Interpolate: 2
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &65000012543798272
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011596535872}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.023460478, y: 0.021585066, z: 0.020942079}
+  m_Center: {x: -0.0001379, y: 0.00017537735, z: -0.00015910435}
 --- !u!82 &82000012001448016
 AudioSource:
   m_ObjectHideFlags: 1
@@ -173,17 +185,17 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 0
+  m_audioClip: {fileID: 8300000, guid: 8577f28dbbc661f4f9488eecf0701cc9, type: 3}
+  m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
-  Priority: 128
+  Priority: 33
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 20
+  MaxDistance: 60
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -209,7 +221,7 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -238,20 +250,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!114 &114000010547578274
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000011596535872}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 333df1e3bd6f9c04cb1642b36c5efbd6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  soundToPlay: {fileID: 8300000, guid: 8577f28dbbc661f4f9488eecf0701cc9, type: 3}
-  Volume: 1
---- !u!135 &135000011417745660
+--- !u!135 &135000012618934870
 SphereCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -261,7 +260,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.061445277
+  m_Radius: 0.010188243
   m_Center: {x: -0.0001379, y: 0.00017537735, z: -0.00015910435}
 --- !u!135 &135000013359281974
 SphereCollider:
