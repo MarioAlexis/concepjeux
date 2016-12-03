@@ -4,6 +4,9 @@ using System.Collections;
 
 public class StartScreenManager : MonoBehaviour 
 {
+    public GUIText text;
+    private bool canEnterGame = false;
+
 	void Awake()
 	{
 		Input.simulateMouseWithTouches = true;
@@ -12,7 +15,8 @@ public class StartScreenManager : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
+        if (text.GetComponent<GUIText>().enabled == true) canEnterGame = true;
+		if (Input.GetKeyDown(KeyCode.Return) && canEnterGame == true)
 		{
             SceneManager.LoadScene("test_terrain");
         }
