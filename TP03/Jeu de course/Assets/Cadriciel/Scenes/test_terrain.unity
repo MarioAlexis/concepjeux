@@ -2217,6 +2217,10 @@ Prefab:
       propertyPath: redShellCDTime
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 1000014197340742, guid: 6543adbe546bdff4aa12cc6afbc023dc, type: 2}
+      propertyPath: m_TagString
+      value: Joueur 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6543adbe546bdff4aa12cc6afbc023dc, type: 2}
   m_IsPrefabParent: 0

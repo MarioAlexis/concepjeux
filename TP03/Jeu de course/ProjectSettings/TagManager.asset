@@ -15,6 +15,7 @@ TagManager:
   - stone
   - waypoint
   - ai
+  - Joueur 1
   layers:
   - Default
   - TransparentFX
