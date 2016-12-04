@@ -57,6 +57,7 @@ namespace UnityStandardAssets.Vehicles.Car
         private float m_CurrentTorque;
         private float m_unitSpeed;
         private Rigidbody m_Rigidbody;
+        private Vector3 initScale;
         private const float k_ReversingThreshold = 0.01f;
 
         public bool Skidding { get; private set; }
@@ -77,14 +78,24 @@ namespace UnityStandardAssets.Vehicles.Car
 
         public Scrollbar nitroBar;
 
+        private bool isStun = false;
+        private float stunAcc = 0.0f;
+        private Vector3 sizeAfterScale;
+
         // for rubberbanding
         private bool isRubberBandingAvailable;
         [SerializeField]
         private float rubberBandingFactor = 1.1f;
+        [SerializeField]
+        float LavaStoneStunTimer = 3.0f;
+        [SerializeField]
+        float SizeReductionScale = 5.0f;
 
         // Use this for initialization
         private void Start()
         {
+            initScale = this.transform.localScale;
+            sizeAfterScale =initScale / SizeReductionScale;
             nitro = new NitroScript();
 
             m_WheelMeshLocalRotations = new Quaternion[4];
@@ -102,6 +113,22 @@ namespace UnityStandardAssets.Vehicles.Car
             m_Rigidbody = GetComponent<Rigidbody>();
             m_CurrentTorque = m_FullTorqueOverAllWheels - (m_TractionControl*m_FullTorqueOverAllWheels);
             m_unitSpeed = (m_SpeedType == SpeedType.MPH ? MPH_UNIT_SPEED : KPH_UNIT_SPEED);
+        }
+
+        public void Update()
+        {
+            if(isStun)
+            {
+                this.transform.localScale = sizeAfterScale;
+                stunAcc += Time.deltaTime;
+                Debug.Log(stunAcc);
+                if(stunAcc >= LavaStoneStunTimer)
+                {
+                    this.transform.localScale = initScale;
+                    stunAcc = 0.0f;
+                    isStun = false;
+                }
+            }
         }
 
 
@@ -475,6 +502,14 @@ namespace UnityStandardAssets.Vehicles.Car
                 }
             }
         }
+
+        public void LavaStoneImpact()
+        {
+            if(this.transform.localScale.magnitude == initScale.magnitude)
+            {
+                isStun = true;
+            }
+        }
     }
 
 
@@ -524,4 +559,5 @@ namespace UnityStandardAssets.Vehicles.Car
         {
             return (quantityOfNitroLeft / quantityMaxOfNitro);
         }
+
     }

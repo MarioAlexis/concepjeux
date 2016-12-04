@@ -26,11 +26,12 @@ public class RespawnPlayerZone : MonoBehaviour
             // SET NULL VELOCITY
             carRigi.velocity = Vector3.zero;
             carRigi.angularVelocity = Vector3.zero;
-            carTrans.eulerAngles = new Vector3(0.0f, 112.0f, 0.0f);
+            carTrans.eulerAngles = new Vector3(0.0f, 41.0f, 0.0f);
             if (carTrans.gameObject.GetComponent<UnityStandardAssets.Vehicles.Car.CarUserControl>() != null)
             {
                 carTrans.gameObject.GetComponent<UnityStandardAssets.Vehicles.Car.CarUserControl>().enabled = false;
                 carTrans.FindChild("FireTrigger").GetComponent<shellSpawn>().enabled = false;
+                carRigi.isKinematic = true;
                 isPlayer = true;
                 isAI = false;
                 StartCoroutine(StartCountdown(carTrans, carTrans.position));
@@ -38,6 +39,7 @@ public class RespawnPlayerZone : MonoBehaviour
             else if(carTrans.gameObject.GetComponent<UnityStandardAssets.Vehicles.Car.CarAIControl>() != null)
             {
                 carTrans.gameObject.GetComponent<UnityStandardAssets.Vehicles.Car.CarAIControl>().enabled = false;
+                carRigi.isKinematic = true;
                 isPlayer = false;
                 isAI = true;
             }
@@ -75,10 +77,12 @@ public class RespawnPlayerZone : MonoBehaviour
         {
             carTrans.gameObject.GetComponent<UnityStandardAssets.Vehicles.Car.CarUserControl>().enabled = true;
             carTrans.FindChild("FireTrigger").GetComponent<shellSpawn>().enabled = true;
+            carRigi.isKinematic = false;
         }
         else if(isAI)
         {
             carTrans.gameObject.GetComponent<UnityStandardAssets.Vehicles.Car.CarAIControl>().enabled = true;
+            carRigi.isKinematic = false;
         }
     }
 }

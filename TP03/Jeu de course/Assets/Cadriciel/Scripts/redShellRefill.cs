@@ -15,7 +15,7 @@ public class redShellRefill : MonoBehaviour {
 
     void OnTriggerEnter(Collider car)
     {
-        if (car.gameObject.tag == "Joueur 1")
+        if (car.gameObject.tag == "player")
         {
             shell.refillRedShell();
             this.transform.position = new Vector3(this.transform.position.x, -3.0f, this.transform.position.z);
