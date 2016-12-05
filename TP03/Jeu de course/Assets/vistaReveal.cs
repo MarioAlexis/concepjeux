@@ -18,7 +18,7 @@ public class vistaReveal : MonoBehaviour {
     private float timeStartRotate = .0f;
 
     void FixedUpdate()
-    {
+    {   
         if (doRotate)
         {
             Vector3 playerPosition = carplayer.transform.position;
@@ -53,8 +53,12 @@ public class vistaReveal : MonoBehaviour {
     {
         if(coll.tag == "player")
         {
-            doRotate = true;
-            timeStartRotate = Time.time;
+            if(carplayer.stateOfCamera == (whichPassage - 1))
+            {
+                doRotate = true;
+                timeStartRotate = Time.time;
+                carplayer.stateOfCamera = whichPassage % 4;
+            }
         }
     }
 }
