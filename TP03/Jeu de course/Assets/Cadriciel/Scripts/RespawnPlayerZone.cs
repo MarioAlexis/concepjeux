@@ -26,7 +26,7 @@ public class RespawnPlayerZone : MonoBehaviour
             // SET NULL VELOCITY
             carRigi.velocity = Vector3.zero;
             carRigi.angularVelocity = Vector3.zero;
-            carTrans.eulerAngles = new Vector3(0.0f, 41.0f, 0.0f);
+            carTrans.eulerAngles = new Vector3(35.0f, 41.0f, 0.0f);
             if (carTrans.gameObject.GetComponent<UnityStandardAssets.Vehicles.Car.CarUserControl>() != null)
             {
                 carTrans.gameObject.GetComponent<UnityStandardAssets.Vehicles.Car.CarUserControl>().enabled = false;
