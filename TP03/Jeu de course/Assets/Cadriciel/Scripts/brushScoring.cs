@@ -50,7 +50,7 @@ public class brushScoring : MonoBehaviour {
             if(timer > timeNeededBeforeStartingToScorePoints && timer-lastTimeScored> intervalBetween2PointScored)
             {
                 lastTimeScored = timer;
-                raceManager.addScore(numberOfPointsToAdd);
+                //raceManager.addScore(numberOfPointsToAdd);
                 //Debug.Log(timer);
             }
         }

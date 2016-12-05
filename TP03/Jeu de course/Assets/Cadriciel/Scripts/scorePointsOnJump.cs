@@ -25,7 +25,7 @@ public class scorePointsOnJump : MonoBehaviour {
         // DoActivateTrigger();
         if (other == playerOneBodyCollider)
         {
-            raceManager.addScore(numberOfPointsToAddOnJUmp);
+            //raceManager.addScore(numberOfPointsToAddOnJUmp);
         }
     }
 }

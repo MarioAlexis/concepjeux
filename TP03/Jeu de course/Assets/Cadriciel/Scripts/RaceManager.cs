@@ -21,9 +21,9 @@ public class RaceManager : MonoBehaviour
 
     private bool raceEnd;
 
-    public GUIText scoreText;
+    //public GUIText scoreText;
 
-    private int score;
+    //private int score;
 
     private bool restart = false;
 
@@ -36,19 +36,18 @@ public class RaceManager : MonoBehaviour
 	
 	void Start()
 	{
-        score = 0;
+        //score = 0;
        // turnSignal = "Left";
-        updateScore();
+        //updateScore();
        // updateTurnSignal();
         StartCoroutine(StartCountdown());
-        //ranking = new string[8];
     }
 
     void Update()
     {
         if (raceEnd)
         {
-            _announcement.fontSize = 16;
+            _announcement.fontSize = 50;
             _announcement.text = ranking + "\n" + "Appuez sur Enter pour quitter la partie";
             if (Input.GetKeyDown(KeyCode.Return))
             {
@@ -101,7 +100,7 @@ public class RaceManager : MonoBehaviour
 
     IEnumerator RaceEndedRoutine()
     {
-		_announcement.fontSize = 20;
+		_announcement.fontSize = 50;
         int count = _endCountdown;
         do
         {
@@ -147,7 +146,7 @@ public class RaceManager : MonoBehaviour
         }
     }
 
-public void updateScore()
+    /*public void updateScore()
     {
         scoreText.text = "score : " + score;
     }
@@ -163,7 +162,7 @@ public void updateScore()
         updateScore();
     }
 
-    public void changeTurnSignal (string newTurnSignal)
+    */public void changeTurnSignal (string newTurnSignal)
     {
         //turnSignal = newTurnSignal;
        // updateTurnSignal();
