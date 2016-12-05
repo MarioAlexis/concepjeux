@@ -91,6 +91,9 @@ namespace UnityStandardAssets.Vehicles.Car
         [SerializeField]
         float SizeReductionScale = 5.0f;
 
+        // Camera Control variable
+        public int stateOfCamera = 0;
+
         // Use this for initialization
         private void Start()
         {
