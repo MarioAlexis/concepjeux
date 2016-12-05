@@ -124,7 +124,7 @@ namespace UnityStandardAssets.Vehicles.Car
             {
                 this.transform.localScale = sizeAfterScale;
                 stunAcc += Time.deltaTime;
-                Debug.Log(stunAcc);
+                //Debug.Log(stunAcc);
                 if(stunAcc >= LavaStoneStunTimer)
                 {
                     this.transform.localScale = initScale;
